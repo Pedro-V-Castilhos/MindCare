@@ -2,13 +2,48 @@ import { MutedText, SemiboldText } from "../Text";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Brain } from "lucide-react";
-import { Field, FieldGroup, FieldLabel } from "../ui/field";
+import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form"
+import type { User } from "../../types/user";
+
+interface LoginFormData {
+    email: string;
+    password: string;
+}
 
 function Login() {
     const navigate = useNavigate();
+    const [users, setUsers] = useState<User[]>();
+    const { register, handleSubmit, setError, formState: { errors } } = useForm<LoginFormData>({
+        defaultValues: {
+            email: '',
+            password: '',
+        },
+    });
+
+    const handleLogin = (data: LoginFormData) => {
+        const user = users?.find(user => user.email === data.email && user.password === data.password);
+        if (user) {
+            navigate("/dashboard");
+        } else {
+            setError("email", { message: "Email ou senha inválidos" });
+            setError("password", { message: "Email ou senha inválidos" });
+        }
+    }
+
+    useEffect(() => {
+        const fetchUSers = async () => {
+            await fetch('https://dummyjson.com/users')
+                .then(response => response.json())
+                .then(data => setUsers(data.users))
+                .catch(error => console.error('Error fetching users:', error));
+        }
+        fetchUSers();
+    }, [])
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-violet-100">
@@ -25,18 +60,17 @@ function Login() {
                     </div>
                 </CardHeader>
                 <CardContent className="flex flex-col w-full gap-4 px-0">
-                    <form action="#" className="w-full" onSubmit={(e) => {
-                        e.preventDefault();
-                        navigate("/dashboard");
-                    }}>
+                    <form action="#" className="w-full" onSubmit={handleSubmit(handleLogin)}>
                         <FieldGroup>
                             <Field>
                                 <FieldLabel htmlFor="email">Email:</FieldLabel>
-                                <Input id="email" type="email" placeholder="Digite seu email" required className="w-full bg-gray-100! py-5" />
+                                <Input {...register("email", { required: true })} id="email" type="email" placeholder="Digite seu email" required className="w-full bg-gray-100! py-5" />
+                                <FieldError className="text-red-500 text-sm mt-1 font-semibold">{errors.email?.message}</FieldError>
                             </Field>
                             <Field>
                                 <FieldLabel htmlFor="password">Senha:</FieldLabel>
-                                <Input id="password" type="password" placeholder="Digite sua senha" required className="w-full bg-gray-100! py-5" />
+                                <Input {...register("password", { required: true })} id="password" type="password" placeholder="Digite sua senha" required className="w-full bg-gray-100! py-5" />
+                                <FieldError className="text-red-500 text-sm mt-1 font-semibold">{errors.password?.message}</FieldError>
                             </Field>
                             <Field>
                                 <Button type="submit" className="w-full bg-indigo-600 text-white hover:bg-indigo-700 py-5 cursor-pointer" >Entrar</Button>
