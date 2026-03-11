@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback } from "../../ui/avatar";
 import { MutedText, SemiboldText } from "../../Text";
 import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuLink } from "../../ui/navigation-menu";
 
-function Dashboard() {
+function PacientDashboard() {
     return (
         <section className="flex flex-col w-full min-h-screen bg-violet-50">
             <DashboardHeader>
@@ -174,4 +174,4 @@ function OrientationCard({ children }: { children?: React.ReactNode }) {
     )
 }
 
-export default Dashboard;
+export default PacientDashboard;

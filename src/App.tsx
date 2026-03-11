@@ -1,10 +1,9 @@
-import Dashboard from "./components/screens/pacient/Dashboard"
+import { RouterProvider } from "react-router";
+import router from "./Router";
 
 export function App() {
   return (
-    < >
-      <Dashboard />
-    </ >
+    <RouterProvider router={router} />
   )
 }
 

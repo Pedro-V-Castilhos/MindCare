@@ -1,5 +1,6 @@
 import { Button } from "./ui/button";
 import { LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 function Header({ children }: { children?: React.ReactNode }) {
     return (
@@ -26,8 +27,10 @@ function HeaderUserIcon({ children }: { children: React.ReactNode }) {
 }
 
 function HeaderLogoutButton() {
+    const navigate = useNavigate();
+
     return (
-        <Button data-icon="inline-start" variant="default" size="lg" className="bg-white border rounded-sm border-gray-300 cursor-pointer text-black hover:text-black hover:bg-gray-200 gap-3 text-lg">
+        <Button onClick={() => { navigate("/") }} data-icon="inline-start" variant="default" size="lg" className="bg-white border rounded-sm border-gray-300 cursor-pointer text-black hover:text-black hover:bg-gray-200 gap-3 text-lg">
             <LogOut />
             Sair
         </Button>
