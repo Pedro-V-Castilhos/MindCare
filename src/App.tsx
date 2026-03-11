@@ -1,4 +1,4 @@
-import Dashboard from "./components/pacient/Dashboard"
+import Dashboard from "./components/screens/pacient/Dashboard"
 
 export function App() {
   return (

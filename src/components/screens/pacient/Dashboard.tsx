@@ -1,9 +1,9 @@
-import { CustomCard, CustomCardHeader, CustomCardIcon, CustomCardTitle, CustomCardContent, CustomCardNumberHighlight, CustomCardHighlightDescription, CustomCardSubtitle } from "../Card";
-import { Header, HeaderInfo, HeaderLogoutButton, HeaderSubtitle, HeaderTitle, HeaderUserIcon } from "../Header";
+import { CustomCard, CustomCardHeader, CustomCardIcon, CustomCardTitle, CustomCardContent, CustomCardNumberHighlight, CustomCardHighlightDescription, CustomCardSubtitle } from "../../Card";
+import { Header, HeaderInfo, HeaderLogoutButton, HeaderSubtitle, HeaderTitle, HeaderUserIcon } from "../../Header";
 import { User, Calendar, FileUp, TrendingUp, AlignJustify, FileText, MessageCircle, MessageSquareX } from "lucide-react";
-import { Avatar, AvatarFallback } from "../ui/avatar";
-import { MutedText, SemiboldText } from "../Text";
-import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuLink } from "../ui/navigation-menu";
+import { Avatar, AvatarFallback } from "../../ui/avatar";
+import { MutedText, SemiboldText } from "../../Text";
+import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuLink } from "../../ui/navigation-menu";
 
 function Dashboard() {
     return (
