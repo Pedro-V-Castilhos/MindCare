@@ -24,8 +24,8 @@ function CustomCardIcon({ children }: { children: React.ReactNode }) {
     return (<p className="text-sm text-gray-500">{children}</p>);
 }
 
-function CustomCardContent({ children }: { children: React.ReactNode }) {
-    return (<CardContent className="">{children}</CardContent>);
+function CustomCardContent({ children, className }: { children: React.ReactNode, className?: string }) {
+    return (<CardContent className={`${className}`}>{children}</CardContent>);
 }
 
 function CustomCardNumberHighlight({ children }: { children: React.ReactNode }) {

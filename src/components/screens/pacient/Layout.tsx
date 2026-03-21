@@ -13,7 +13,9 @@ function Layout({ children }: { children: React.ReactNode }) {
                 </div>
             </PacientHeader>
             <NavMenu />
-            {children}
+            <div className="lg:px-30 px-4">
+                {children}
+            </div>
         </section>
     )
 }

@@ -9,7 +9,7 @@ function PacientNavMenu() {
                     <NavigationMenuLink className="hover:bg-gray-200 focus:bg-gray-200" asChild><a href="/dashboard" className="text-black font-semibold"><AlignJustify />Início</a></NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                    <NavigationMenuLink className="hover:bg-gray-200 focus:bg-gray-200" asChild><a href="#" className="text-black font-semibold"><Calendar />Agendamentos</a></NavigationMenuLink>
+                    <NavigationMenuLink className="hover:bg-gray-200 focus:bg-gray-200" asChild><a href="/appointments" className="text-black font-semibold"><Calendar />Agendamentos</a></NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                     <NavigationMenuLink className="hover:bg-gray-200 focus:bg-gray-200" asChild><a href="#" className="text-black font-semibold"><TrendingUp />Meu Progresso</a></NavigationMenuLink>
