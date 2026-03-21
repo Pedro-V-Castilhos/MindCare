@@ -4,7 +4,7 @@ import NavMenu from "@/components/PacientNavMenu";
 
 function Layout({ children }: { children: React.ReactNode }) {
     return (
-        <>
+        <section className="flex flex-col w-full min-h-screen bg-violet-50">
             <PacientHeader>
                 <HeaderUserIcon><User /></HeaderUserIcon>
                 <div>
@@ -14,7 +14,7 @@ function Layout({ children }: { children: React.ReactNode }) {
             </PacientHeader>
             <NavMenu />
             {children}
-        </>
+        </section>
     )
 }
 
