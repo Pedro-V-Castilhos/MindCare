@@ -4,6 +4,7 @@ import Login from "./components/screens/Login"
 import Appointments from "./components/screens/pacient/Appointments"
 import PacientProgress from "./components/screens/pacient/PacientProgress"
 import PacientNotes from "./components/screens/pacient/Notes"
+import PacientDocuments from "./components/screens/pacient/Documents"
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
   {
     path: "notes",
     element: <PacientNotes />
+  },
+  {
+    path: "documents",
+    element: <PacientDocuments />
   }
 ])
 
