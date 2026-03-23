@@ -3,6 +3,7 @@ import PacientDashboard from "./components/screens/pacient/Dashboard"
 import Login from "./components/screens/Login"
 import Appointments from "./components/screens/pacient/Appointments"
 import PacientProgress from "./components/screens/pacient/PacientProgress"
+import PacientNotes from "./components/screens/pacient/Notes"
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
   {
     path: "progress",
     element: <PacientProgress />,
+  },
+  {
+    path: "notes",
+    element: <PacientNotes />
   }
 ])
 

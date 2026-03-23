@@ -15,7 +15,7 @@ function PacientNavMenu() {
                     <NavigationMenuLink className="hover:bg-gray-200 focus:bg-gray-200" asChild><a href="/progress" className="text-black font-semibold"><TrendingUp />Meu Progresso</a></NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                    <NavigationMenuLink className="hover:bg-gray-200 focus:bg-gray-200" asChild><a href="#" className="text-black font-semibold"><FileText />Anotações</a></NavigationMenuLink>
+                    <NavigationMenuLink className="hover:bg-gray-200 focus:bg-gray-200" asChild><a href="/notes" className="text-black font-semibold"><FileText />Anotações</a></NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                     <NavigationMenuLink className="hover:bg-gray-200 focus:bg-gray-200" asChild><a href="#" className="text-black font-semibold"><FileUp />Documentos</a></NavigationMenuLink>
