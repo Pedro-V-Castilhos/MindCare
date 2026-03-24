@@ -11,6 +11,9 @@ export const appointmentsMock: Appointment[] = [
     status: "completed",
     createdAt: new Date(),
     updatedAt: new Date(),
+    notes: "Sessão focada em técnicas de respiração para ansiedade.",
+    location: "Clínica MindCare - Sala 1",
+    type: "presential",
   },
   {
     id: 2,
@@ -22,5 +25,7 @@ export const appointmentsMock: Appointment[] = [
     status: "scheduled",
     createdAt: new Date(),
     updatedAt: new Date(),
+    location: "Clínica MindCare - Sala 1",
+    type: "presential",
   },
 ]
