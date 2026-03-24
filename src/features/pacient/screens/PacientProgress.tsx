@@ -12,75 +12,31 @@ import {
 } from "@/components/ui/chart"
 import * as React from "react"
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
-
-const chartData = [
-    {
-        id: 'prog-1',
-        patientId: 'patient-1',
-        date: '2026-02-24',
-        mood: 5,
-        anxiety: 7,
-        sleep: 6,
-        energy: 5,
-    },
-    {
-        id: 'prog-2',
-        patientId: 'patient-1',
-        date: '2026-02-26',
-        mood: 6,
-        anxiety: 6,
-        sleep: 7,
-        energy: 6,
-    },
-    {
-        id: 'prog-3',
-        patientId: 'patient-1',
-        date: '2026-03-01',
-        mood: 7,
-        anxiety: 5,
-        sleep: 7,
-        energy: 7,
-    },
-    {
-        id: 'prog-4',
-        patientId: 'patient-1',
-        date: '2026-03-05',
-        mood: 7,
-        anxiety: 4,
-        sleep: 8,
-        energy: 7,
-    },
-    {
-        id: 'prog-5',
-        patientId: 'patient-1',
-        date: '2026-03-08',
-        mood: 8,
-        anxiety: 4,
-        sleep: 8,
-        energy: 8,
-    },
-];
+import { useProgressEntriesStore } from "@/hooks/progressEntriesStore";
+import { Card, CardContent } from "@/components/ui/card";
 
 const chartConfig = {
     mood: {
         label: "Humor",
         color: "var(--color-green-500)",
     },
-    anxiety: {
+    anxietyLevel: {
         label: "Ansiedade",
         color: "var(--color-red-500)",
     },
-    sleep: {
+    sleepQuality: {
         label: "Sono",
         color: "var(--color-blue-500)",
     },
-    energy: {
+    energyLevel: {
         label: "Energia",
         color: "var(--color-yellow-500)",
     },
 } satisfies ChartConfig
 
 function PacientProgress() {
+    const progressEntries = useProgressEntriesStore(state => state.progressEntries).filter(entry => new Date(entry.date) >= new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 7)).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
     return (
         <Layout>
             <div className="flex sm:flex-row flex-col justify-between sm:items-center my-4 gap-2 sm:gap-0">
@@ -97,7 +53,7 @@ function PacientProgress() {
                         <CustomCardIcon><Smile /></CustomCardIcon>
                     </CustomCardHeader>
                     <CustomCardContent>
-                        <CustomCardNumberHighlight>6.7/10</CustomCardNumberHighlight>
+                        <CustomCardNumberHighlight>{(progressEntries.reduce((acc, entry) => acc + entry.mood, 0) / 7).toFixed(1)}/5</CustomCardNumberHighlight>
                         <CustomCardHighlightDescription>Últimos 7 dias</CustomCardHighlightDescription>
                     </CustomCardContent>
                 </CustomCard>
@@ -107,7 +63,7 @@ function PacientProgress() {
                         <CustomCardIcon><Activity /></CustomCardIcon>
                     </CustomCardHeader>
                     <CustomCardContent>
-                        <CustomCardNumberHighlight>5.2/10</CustomCardNumberHighlight>
+                        <CustomCardNumberHighlight>{(progressEntries.reduce((acc, entry) => acc + entry.anxietyLevel, 0) / 7).toFixed(1)}/5</CustomCardNumberHighlight>
                         <CustomCardHighlightDescription>Últimos 7 dias</CustomCardHighlightDescription>
                     </CustomCardContent>
                 </CustomCard>
@@ -117,7 +73,7 @@ function PacientProgress() {
                         <CustomCardIcon><Moon /></CustomCardIcon>
                     </CustomCardHeader>
                     <CustomCardContent>
-                        <CustomCardNumberHighlight>6.8/10</CustomCardNumberHighlight>
+                        <CustomCardNumberHighlight>{(progressEntries.reduce((acc, entry) => acc + entry.sleepQuality, 0) / 7).toFixed(1)}/5</CustomCardNumberHighlight>
                         <CustomCardHighlightDescription>Últimos 7 dias</CustomCardHighlightDescription>
                     </CustomCardContent>
                 </CustomCard>
@@ -127,7 +83,7 @@ function PacientProgress() {
                         <CustomCardIcon><Battery /></CustomCardIcon>
                     </CustomCardHeader>
                     <CustomCardContent>
-                        <CustomCardNumberHighlight>6.3/10</CustomCardNumberHighlight>
+                        <CustomCardNumberHighlight>{(progressEntries.reduce((acc, entry) => acc + entry.energyLevel, 0) / 7).toFixed(1)}/5</CustomCardNumberHighlight>
                         <CustomCardHighlightDescription>Últimos 7 dias</CustomCardHighlightDescription>
                     </CustomCardContent>
                 </CustomCard>
@@ -146,6 +102,16 @@ function ProgressStatistics({ children }: { children?: React.ReactNode }) {
 }
 
 function ProgressChart() {
+    const [width, setWidth] = React.useState(window.innerWidth);
+
+    React.useEffect(() => {
+        const handleResize = () => setWidth(window.innerWidth);
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    const chartData = useProgressEntriesStore(state => state.progressEntries).filter(entry => new Date(entry.date) >= new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 30)).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+
     return (
         <CustomCard>
             <CustomCardHeader>
@@ -156,16 +122,25 @@ function ProgressChart() {
             </CustomCardHeader>
             <CustomCardContent>
                 <ChartContainer config={chartConfig} className="w-full h-80 p-0">
-                    <LineChart accessibilityLayer data={chartData} className="w-full m-0 p-0">
+                    <LineChart accessibilityLayer data={width >= 768 ? chartData : chartData.slice(-7)} className="w-full m-0 p-0">
                         <CartesianGrid strokeDasharray="3 3" stroke="var(--color-gray-300)" />
-                        <YAxis tickMargin={8} width={20} />
+                        <YAxis tickMargin={8} width={20} domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]} />
                         <XAxis dataKey="date" tickMargin={8} tickFormatter={(value) => {
                             const date = new Date(value)
                             return date.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })
                         }} />
-                        <ChartTooltip cursor={false} content={
-                            <ChartTooltipContent />
-                        } />
+                        <ChartTooltip cursor={false} content={({ active, payload, label }) => {
+                            if (!active || !payload?.length) return null;
+                            const entry = payload[0].payload;
+                            return (
+                                <Card className="max-w-50">
+                                    <CardContent className="p-3">
+                                        <ChartTooltipContent active={active} payload={payload} label={label} />
+                                        {entry?.notes && <p className="text-xs text-muted-foreground mt-2 border-t pt-2">{entry.notes}</p>}
+                                    </CardContent>
+                                </Card>
+                            )
+                        }} />
                         <Line
                             dataKey="mood"
                             type="monotone"
@@ -174,23 +149,23 @@ function ProgressChart() {
                             dot={false}
                         />
                         <Line
-                            dataKey="anxiety"
+                            dataKey="anxietyLevel"
                             type="monotone"
-                            stroke={`var(--color-anxiety)`}
+                            stroke={`var(--color-anxietyLevel)`}
                             strokeWidth={2}
                             dot={false}
                         />
                         <Line
-                            dataKey="sleep"
+                            dataKey="sleepQuality"
                             type="monotone"
-                            stroke={`var(--color-sleep)`}
+                            stroke={`var(--color-sleepQuality)`}
                             strokeWidth={2}
                             dot={false}
                         />
                         <Line
-                            dataKey="energy"
-                            type="linear"
-                            stroke={`var(--color-energy)`}
+                            dataKey="energyLevel"
+                            type="monotone"
+                            stroke={`var(--color-energyLevel)`}
                             strokeWidth={2}
                             dot={false}
                         />
