@@ -9,6 +9,6 @@ export interface SessionNote {
   progress?: number
   topicsCovered?: string[]
   nextSteps?: string
-  createdAt: string
-  updatedAt: string
+  createdAt: Date
+  updatedAt: Date
 }

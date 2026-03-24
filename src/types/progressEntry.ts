@@ -7,6 +7,6 @@ export interface ProgressEntry {
   sleepQuality: number
   energyLevel: number
   notes?: string
-  createdAt: string
-  updatedAt: string
+  createdAt: Date
+  updatedAt: Date
 }

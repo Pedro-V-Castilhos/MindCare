@@ -1,10 +1,13 @@
 export interface User {
   id: number
-  name: string
+  firstName: string
+  lastName: string
   email: string
   phone?: string
   password: string
-  avatar?: string
+  image?: string
+  createdAt: Date
+  updatedAt: Date
 }
 
 export interface Pacient extends User {

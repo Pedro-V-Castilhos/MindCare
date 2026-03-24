@@ -12,25 +12,30 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: "dashboard",
-    element: <PacientDashboard />,
+    path: "pacient",
+    children: [
+      {
+        path: "",
+        element: <PacientDashboard />,
+      },
+      {
+        path: "appointments",
+        element: <Appointments />,
+      },
+      {
+        path: "progress",
+        element: <PacientProgress />,
+      },
+      {
+        path: "notes",
+        element: <PacientNotes />
+      },
+      {
+        path: "documents",
+        element: <PacientDocuments />
+      }
+    ]
   },
-  {
-    path: "appointments",
-    element: <Appointments />,
-  },
-  {
-    path: "progress",
-    element: <PacientProgress />,
-  },
-  {
-    path: "notes",
-    element: <PacientNotes />
-  },
-  {
-    path: "documents",
-    element: <PacientDocuments />
-  }
 ])
 
 export default router

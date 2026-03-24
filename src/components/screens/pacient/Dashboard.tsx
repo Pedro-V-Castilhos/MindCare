@@ -3,9 +3,14 @@ import { User, Calendar, FileUp, TrendingUp, MessageSquareX } from "lucide-react
 import { Avatar, AvatarFallback } from "../../ui/avatar";
 import { MutedText, SemiboldText } from "../../Text";
 import Layout from "./Layout";
+import { useSessionStore } from "@/hooks/sessionStore";
+import type { Pacient } from "@/types/user";
 
 
 function PacientDashboard() {
+    const session = useSessionStore((s) => s.session);
+    const user = session!.user as Pacient;
+
     return (
         <Layout>
             <DashboardStatistics>
@@ -15,7 +20,7 @@ function PacientDashboard() {
                         <CustomCardIcon><Calendar /></CustomCardIcon>
                     </CustomCardHeader>
                     <CustomCardContent>
-                        <CustomCardNumberHighlight>12</CustomCardNumberHighlight>
+                        <CustomCardNumberHighlight>{user.totalSessions}</CustomCardNumberHighlight>
                         <CustomCardHighlightDescription>Sessões realizadas</CustomCardHighlightDescription>
                     </CustomCardContent>
                 </CustomCard>

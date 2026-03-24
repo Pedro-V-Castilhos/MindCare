@@ -9,4 +9,6 @@ export interface Appointment {
   notes?: string
   location?: string
   type?: "presential" | "online"
+  createdAt: Date
+  updatedAt: Date
 }

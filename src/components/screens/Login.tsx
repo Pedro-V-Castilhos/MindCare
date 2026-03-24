@@ -6,9 +6,10 @@ import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form"
-import type { User } from "../../types/user";
+import { useUserStore } from "@/hooks/userStore";
+import { useSessionStore } from "@/hooks/sessionStore";
+import { useEffect, useState } from "react";
 
 interface LoginFormData {
     email: string;
@@ -17,7 +18,9 @@ interface LoginFormData {
 
 function Login() {
     const navigate = useNavigate();
-    const [users, setUsers] = useState<User[]>();
+    const userStore = useUserStore();
+    const sessionStore = useSessionStore();
+    const [hydrated, setHydrated] = useState(() => useSessionStore.persist.hasHydrated());
     const { register, handleSubmit, setError, formState: { errors } } = useForm<LoginFormData>({
         defaultValues: {
             email: '',
@@ -26,24 +29,37 @@ function Login() {
     });
 
     const handleLogin = (data: LoginFormData) => {
-        const user = users?.find(user => user.email === data.email && user.password === data.password);
+        const user = userStore.users.find(user => user.email === data.email && user.password === data.password);
         if (user) {
-            navigate("/dashboard");
+            sessionStore.setSession(user);
+            if (user.role === "pacient") {
+                navigate("/pacient");
+                return null;
+            }
         } else {
             setError("email", { message: "Email ou senha inválidos" });
             setError("password", { message: "Email ou senha inválidos" });
         }
-    }
+    };
 
     useEffect(() => {
-        const fetchUSers = async () => {
-            await fetch('https://dummyjson.com/users')
-                .then(response => response.json())
-                .then(data => setUsers(data.users))
-                .catch(error => console.error('Error fetching users:', error));
+        const unsub = useSessionStore.persist.onFinishHydration(() => {
+            setHydrated(true);
+        });
+        return unsub;
+    }, []);
+
+    useEffect(() => {
+        if (hydrated && sessionStore.session) {
+            if (sessionStore.session.user.role === "pacient") {
+                navigate("/pacient");
+            }
         }
-        fetchUSers();
-    }, [])
+    }, [hydrated, sessionStore.session, navigate]);
+
+    if (!hydrated) return null;
+
+    if (sessionStore.session) return null;
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-violet-100">
