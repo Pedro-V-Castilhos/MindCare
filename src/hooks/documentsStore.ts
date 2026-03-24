@@ -1,5 +1,6 @@
+import { documentsMock } from "@/mocks/documentsMock"
 import type { Document } from "@/types/document"
-import { persist } from "zustand/middleware/persist"
+import { persist } from "zustand/middleware"
 import { create } from "zustand/react"
 
 interface DocumentsStore {
@@ -11,7 +12,7 @@ interface DocumentsStore {
 export const useDocumentsStore = create<DocumentsStore>()(
   persist(
     (set) => ({
-      documents: [],
+      documents: documentsMock,
       addDocument: (document: Document) =>
         set((state) => ({ documents: [...state.documents, document] })),
       removeDocument: (documentId: number) =>

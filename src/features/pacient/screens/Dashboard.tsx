@@ -1,17 +1,23 @@
 import { CustomCard, CustomCardHeader, CustomCardIcon, CustomCardTitle, CustomCardContent, CustomCardNumberHighlight, CustomCardHighlightDescription, CustomCardSubtitle } from "../../../components/Card";
-import { User, Calendar, FileUp, TrendingUp, MessageSquareX } from "lucide-react";
+import { User, Calendar, FileUp, TrendingUp, MessageSquareX, Clock } from "lucide-react";
 import { Avatar, AvatarFallback } from "../../../components/ui/avatar";
 import { MutedText, SemiboldText } from "../../../components/Text";
 import Layout from "../components/Layout";
+import { Badge } from "../../../components/ui/badge";
 import { useSessionStore } from "@/hooks/sessionStore";
 import type { Pacient, Therapist } from "@/types/user";
 import { useUserStore } from "@/hooks/userStore";
+import { useDocumentsStore } from "@/hooks/documentsStore";
+import { useAppointmentStore } from "@/hooks/appointmentStore";
+import { useShallow } from "zustand/shallow";
 
 
 function PacientDashboard() {
     const session = useSessionStore((s) => s.session);
     const user = session?.user as Pacient;
     const therapist = useUserStore((s) => s.users.find(u => u.id === user?.therapistId)) as Therapist;
+    const documents = useDocumentsStore((s) => s.documents);
+    const appointments = useAppointmentStore(useShallow((s) => s.appointments.filter(a => a.patientId === user?.id && new Date(a.date) >= new Date()).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())));
 
     return (
         <Layout>
@@ -32,7 +38,7 @@ function PacientDashboard() {
                         <CustomCardIcon><FileUp /></CustomCardIcon>
                     </CustomCardHeader>
                     <CustomCardContent>
-                        <CustomCardNumberHighlight>2</CustomCardNumberHighlight>
+                        <CustomCardNumberHighlight>{documents.filter(doc => doc.patientId === user?.id).length}</CustomCardNumberHighlight>
                         <CustomCardHighlightDescription>Documentos enviados</CustomCardHighlightDescription>
                     </CustomCardContent>
                 </CustomCard>
@@ -69,10 +75,23 @@ function PacientDashboard() {
                         </div>
                     </CustomCardHeader>
                     <CustomCardContent>
-                        <div className="flex flex-col items-center justify-center py-4 gap-2">
-                            <MutedText><MessageSquareX size={40} /></MutedText>
-                            <MutedText>Nenhuma sessão agendada. Agende sua próxima sessão!</MutedText>
-                        </div>
+                        {
+                            appointments[0]
+                                ? <CustomCard>
+                                    <CustomCardHeader>
+                                        <div className="flex flex-col gap-2">
+                                            <CustomCardTitle>Sessão de Terapia</CustomCardTitle>
+                                            <CustomCardSubtitle><Calendar className="inline-block" /> {new Date(appointments[0].date).toLocaleDateString()}</CustomCardSubtitle>
+                                            <CustomCardSubtitle><Clock className="inline-block" /> {new Date(appointments[0].date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {new Date(new Date(appointments[0].date).getTime() + appointments[0].durationMinutes * 60000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</CustomCardSubtitle>
+                                        </div>
+                                        <Badge variant={appointments[0].status === "scheduled" ? "default" : "secondary"}>{appointments[0].status === "scheduled" ? "Agendado" : appointments[0].status === "completed" ? "Realizado" : "Cancelado"}</Badge>
+                                    </CustomCardHeader>
+                                </CustomCard>
+                                : <div className="flex flex-col items-center justify-center py-4 gap-2">
+                                    <MutedText><MessageSquareX size={40} /></MutedText>
+                                    <MutedText>Nenhuma sessão agendada. Agende sua próxima sessão!</MutedText>
+                                </div>
+                        }
                     </CustomCardContent>
                 </CustomCard>
                 <OrientationCard>

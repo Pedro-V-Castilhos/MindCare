@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 function Layout({ children }: { children: React.ReactNode }) {
     const navigate = useNavigate();
-    const sessionStore = useSessionStore();
+    const { session, clearSession } = useSessionStore();
     const [hydrated, setHydrated] = useState(() => useSessionStore.persist.hasHydrated());
 
     useEffect(() => {
@@ -18,18 +18,18 @@ function Layout({ children }: { children: React.ReactNode }) {
     }, []);
 
     useEffect(() => {
-        if (hydrated && !sessionStore.session) {
+        if (hydrated && !session) {
             navigate("/");
         }
-        if (hydrated && sessionStore.session && sessionStore.session.user.role !== "pacient") {
-            sessionStore.clearSession();
+        if (hydrated && session && session.user.role !== "pacient") {
+            clearSession();
             navigate("/");
         }
-    }, [hydrated, sessionStore, navigate]);
+    }, [hydrated, session, clearSession, navigate]);
 
     if (!hydrated) return null; // ou um loading spinner
 
-    if (!sessionStore.session) return null;
+    if (!session) return null;
 
     return (
         <section className="flex flex-col w-full min-h-screen bg-violet-50">
@@ -37,7 +37,7 @@ function Layout({ children }: { children: React.ReactNode }) {
                 <HeaderUserIcon><User /></HeaderUserIcon>
                 <div>
                     <HeaderTitle>Meu Espaço Terapêutico</HeaderTitle>
-                    <HeaderSubtitle>Bem vindo, {sessionStore.session.user.firstName}!</HeaderSubtitle>
+                    <HeaderSubtitle>Bem vindo, {session.user.firstName}!</HeaderSubtitle>
                 </div>
             </PacientHeader>
             <NavMenu />
