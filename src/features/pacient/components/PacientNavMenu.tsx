@@ -1,5 +1,5 @@
 import { AlignJustify, Calendar, FileText, FileUp, MessageCircle, TrendingUp } from "lucide-react";
-import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "./ui/navigation-menu"
+import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "@/components/ui/navigation-menu";
 
 function PacientNavMenu() {
     return (
