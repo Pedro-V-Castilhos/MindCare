@@ -1,10 +1,10 @@
 import { createBrowserRouter } from "react-router"
-import PacientDashboard from "../components/screens/pacient/Dashboard"
-import Login from "../components/screens/Login"
-import Appointments from "../components/screens/pacient/Appointments"
-import PacientProgress from "../components/screens/pacient/PacientProgress"
-import PacientNotes from "../components/screens/pacient/Notes"
-import PacientDocuments from "../components/screens/pacient/Documents"
+import PacientDashboard from "../features/pacient/screens/Dashboard"
+import Login from "../features/auth/Login"
+import Appointments from "../features/pacient/screens/Appointments"
+import PacientProgress from "../features/pacient/screens/PacientProgress"
+import PacientNotes from "../features/pacient/screens/Notes"
+import PacientDocuments from "../features/pacient/screens/Documents"
 
 const router = createBrowserRouter([
   {

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import Layout from "./Layout";
+import Layout from "../components/Layout";
 import { Plus, Smile, Activity, Moon, Battery, TrendingUp } from "lucide-react";
 import { CustomCard, CustomCardContent, CustomCardHeader, CustomCardHighlightDescription, CustomCardIcon, CustomCardNumberHighlight, CustomCardSubtitle, CustomCardTitle } from "@/components/Card";
 import {
