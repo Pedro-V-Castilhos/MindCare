@@ -28,7 +28,7 @@ export const useUserStore = create<UsersStore>()(
         })),
     }),
     {
-      name: "mindcare-users",
+      name: "users-storage",
     }
   )
 )
