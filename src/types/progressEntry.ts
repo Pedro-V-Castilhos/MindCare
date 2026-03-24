@@ -1,8 +1,8 @@
 export interface ProgressEntry {
   id: number
   patientId: number
-  date: string
-  mood: string
+  date: Date
+  mood: number
   anxietyLevel: number
   sleepQuality: number
   energyLevel: number

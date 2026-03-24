@@ -4,12 +4,14 @@ import { Avatar, AvatarFallback } from "../../../components/ui/avatar";
 import { MutedText, SemiboldText } from "../../../components/Text";
 import Layout from "../components/Layout";
 import { useSessionStore } from "@/hooks/sessionStore";
-import type { Pacient } from "@/types/user";
+import type { Pacient, Therapist } from "@/types/user";
+import { useUserStore } from "@/hooks/userStore";
 
 
 function PacientDashboard() {
     const session = useSessionStore((s) => s.session);
     const user = session?.user as Pacient;
+    const therapist = useUserStore((s) => s.users.find(u => u.id === user?.therapistId)) as Therapist;
 
     return (
         <Layout>
@@ -40,23 +42,23 @@ function PacientDashboard() {
                         <CustomCardIcon><TrendingUp /></CustomCardIcon>
                     </CustomCardHeader>
                     <CustomCardContent>
-                        <CustomCardNumberHighlight>112</CustomCardNumberHighlight>
+                        <CustomCardNumberHighlight>{Math.floor((new Date().getTime() - new Date(user?.createdAt).getTime()) / (1000 * 60 * 60 * 24 * 7))}</CustomCardNumberHighlight>
                         <CustomCardHighlightDescription>Semanas de terapia</CustomCardHighlightDescription>
                     </CustomCardContent>
                 </CustomCard>
             </DashboardStatistics>
             <DashboardContent>
                 <TherapistInfoCard>
-                    <SemiboldText>Dr. João Silva</SemiboldText>
+                    <SemiboldText>{therapist?.firstName} {therapist?.lastName}</SemiboldText>
                     <MutedText>
-                        Psicólogo Clínico
+                        {therapist?.speciality}
                     </MutedText>
                     <MutedText>
-                        CRP 06/123456
+                        CRP {therapist?.CRPNumber}
                     </MutedText>
                     <div className="flex flex-row flex-wrap">
-                        <p className="mr-4">joao.silva@terapia.com</p>
-                        <p>(11) 98765-4321</p>
+                        <p className="mr-4">{therapist?.email}</p>
+                        <p>{therapist?.phone}</p>
                     </div>
                 </TherapistInfoCard>
                 <CustomCard>

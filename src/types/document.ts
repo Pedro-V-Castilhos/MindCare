@@ -2,7 +2,7 @@ export interface Document {
   id: number
   name: string
   type: "receipt" | "report" | "prescription" | "other"
-  uploadDate: string
+  uploadDate: Date
   size: number
   patientId: number
   therapistId: number

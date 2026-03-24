@@ -2,9 +2,9 @@ export interface Appointment {
   id: number
   patientId: number
   therapistId: number
-  date: string
+  date: Date
   time: string
-  duration: number
+  durationMinutes: number
   status: "scheduled" | "completed" | "canceled"
   notes?: string
   location?: string

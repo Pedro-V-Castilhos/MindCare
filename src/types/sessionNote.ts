@@ -3,7 +3,7 @@ export interface SessionNote {
   appointmentId: number
   therapistId: number
   patientId: number
-  date: string
+  date: Date
   content: string
   mood?: string
   progress?: number
