@@ -9,7 +9,7 @@ import type { Pacient } from "@/types/user";
 
 function PacientDashboard() {
     const session = useSessionStore((s) => s.session);
-    const user = session!.user as Pacient;
+    const user = session?.user as Pacient;
 
     return (
         <Layout>
@@ -20,7 +20,7 @@ function PacientDashboard() {
                         <CustomCardIcon><Calendar /></CustomCardIcon>
                     </CustomCardHeader>
                     <CustomCardContent>
-                        <CustomCardNumberHighlight>{user.totalSessions}</CustomCardNumberHighlight>
+                        <CustomCardNumberHighlight>{user?.totalSessions}</CustomCardNumberHighlight>
                         <CustomCardHighlightDescription>Sessões realizadas</CustomCardHighlightDescription>
                     </CustomCardContent>
                 </CustomCard>
