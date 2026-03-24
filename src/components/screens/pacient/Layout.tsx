@@ -1,6 +1,6 @@
-import { Header, HeaderInfo, HeaderLogoutButton, HeaderSubtitle, HeaderTitle, HeaderUserIcon } from "../../../components/Header";
+import { Header, HeaderInfo, HeaderLogoutButton, HeaderSubtitle, HeaderTitle, HeaderUserIcon } from "../../Header";
 import { User } from "lucide-react";
-import NavMenu from "./PacientNavMenu";
+import NavMenu from "@/components/PacientNavMenu";
 import { useSessionStore } from "@/hooks/sessionStore";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";

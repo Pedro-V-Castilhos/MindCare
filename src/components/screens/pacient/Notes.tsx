@@ -1,6 +1,6 @@
 import { PageHeader } from "@/components/Text";
 import { FileText, ChevronDown } from "lucide-react";
-import Layout from "../components/Layout";
+import Layout from "./Layout";
 import { CustomCard, CustomCardContent, CustomCardHeader, CustomCardTitle } from "@/components/Card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";

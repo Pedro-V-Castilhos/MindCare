@@ -1,5 +1,5 @@
 import { PageHeader } from "@/components/Text";
-import Layout from "../components/Layout";
+import Layout from "./Layout";
 import { Plus, FileText, Download, TrashIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CustomCard, CustomCardContent } from "@/components/Card";

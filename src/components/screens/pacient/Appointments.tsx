@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Plus, Calendar, Clock } from "lucide-react";
-import Layout from "../components/Layout";
+import Layout from "./Layout";
 import { CustomCard, CustomCardContent, CustomCardHeader, CustomCardSubtitle, CustomCardTitle } from "@/components/Card";
 import { MutedText } from "@/components/Text";
 import { Badge } from "@/components/ui/badge";

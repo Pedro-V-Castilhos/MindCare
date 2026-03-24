@@ -1,8 +1,8 @@
-import { CustomCard, CustomCardHeader, CustomCardIcon, CustomCardTitle, CustomCardContent, CustomCardNumberHighlight, CustomCardHighlightDescription, CustomCardSubtitle } from "../../../components/Card";
+import { CustomCard, CustomCardHeader, CustomCardIcon, CustomCardTitle, CustomCardContent, CustomCardNumberHighlight, CustomCardHighlightDescription, CustomCardSubtitle } from "../../Card";
 import { User, Calendar, FileUp, TrendingUp, MessageSquareX } from "lucide-react";
-import { Avatar, AvatarFallback } from "../../../components/ui/avatar";
-import { MutedText, SemiboldText } from "../../../components/Text";
-import Layout from "../components/Layout";
+import { Avatar, AvatarFallback } from "../../ui/avatar";
+import { MutedText, SemiboldText } from "../../Text";
+import Layout from "./Layout";
 import { useSessionStore } from "@/hooks/sessionStore";
 import type { Pacient } from "@/types/user";
 

@@ -1,10 +1,10 @@
-import { MutedText, SemiboldText } from "../../components/Text";
-import { Avatar, AvatarFallback } from "../../components/ui/avatar";
-import { Card, CardContent, CardHeader } from "../../components/ui/card";
+import { MutedText, SemiboldText } from "../Text";
+import { Avatar, AvatarFallback } from "../ui/avatar";
+import { Card, CardContent, CardHeader } from "../ui/card";
 import { Brain } from "lucide-react";
-import { Field, FieldError, FieldGroup, FieldLabel } from "../../components/ui/field";
-import { Input } from "../../components/ui/input";
-import { Button } from "../../components/ui/button";
+import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form"
 import { useUserStore } from "@/hooks/userStore";
