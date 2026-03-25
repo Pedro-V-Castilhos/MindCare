@@ -14,11 +14,9 @@ export async function uploadFile(file: File, path: string) {
   return data
 }
 
-export async function getPublicUrl(path: string) {
-  const { data } = await supabase.storage.from(BUCKET).getPublicUrl(path)
-
-  if (!data) throw new Error("Failed to get public URL")
-  return data
+export function getPublicUrl(path: string) {
+  const { data } = supabase.storage.from(BUCKET).getPublicUrl(path)
+  return data.publicUrl
 }
 
 export async function downloadFile(path: string) {

@@ -1,7 +1,7 @@
 export interface Document {
   id: number
   name: string
-  type: "receipt" | "report" | "prescription" | "other"
+  type: "Recibo" | "Relatório" | "Prescrição" | "Outro"
   uploadDate: Date
   size: number
   patientId: number

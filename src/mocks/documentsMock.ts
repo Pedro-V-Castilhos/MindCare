@@ -3,8 +3,8 @@ import type { Document } from "@/types/document"
 export const documentsMock: Document[] = [
   {
     id: 1,
-    name: "Consulta_2026-03-01.pdf",
-    type: "receipt",
+    name: "Consulta_2026-03-01.txt",
+    type: "Recibo",
     uploadDate: new Date("2026-03-01T12:00:00"),
     size: 1750, // Em Bytes
     patientId: 1,
