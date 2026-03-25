@@ -13,7 +13,7 @@ interface DocumentsStore {
 
 export const useDocumentsStore = create<DocumentsStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       documents: documentsMock,
       addDocument: (document: Document, file: File) => {
         const fileName = Date.now().toString()
@@ -23,18 +23,23 @@ export const useDocumentsStore = create<DocumentsStore>()(
           documents: [...state.documents, { ...document, url }],
         }))
       },
-      removeDocument: (documentId: number) =>
+      removeDocument: async (documentId: number) => {
+        const documentToRemove = get().documents.find(
+          (doc) => doc.id === documentId
+        )
+        if (documentToRemove) {
+          const path = new URL(documentToRemove.url).pathname.split("/").pop()!
+          const result = await deleteFile(path).catch((error) => {
+            console.error("Erro ao deletar arquivo do bucket:", error)
+          })
+          console.log("Resultado da exclusão do arquivo:", result)
+        }
         set((state) => {
-          const documentToRemove = state.documents.find(
-            (doc) => doc.id === documentId
-          )
-          if (documentToRemove) {
-            deleteFile(documentToRemove.url)
-          }
           return {
             documents: state.documents.filter((doc) => doc.id !== documentId),
           }
-        }),
+        })
+      },
       reset: () => set({ documents: documentsMock }),
     }),
     {
