@@ -35,6 +35,9 @@ function Login() {
             if (user.role === "pacient") {
                 navigate("/pacient");
                 return null;
+            } else if (user.role === "therapist") {
+                navigate("/therapist");
+                return null;
             }
         } else {
             setError("email", { message: "Email ou senha inválidos" });
