@@ -5,11 +5,16 @@ import Appointments from "../features/pacient/screens/Appointments"
 import PacientProgress from "../features/pacient/screens/PacientProgress"
 import PacientNotes from "../features/pacient/screens/Notes"
 import PacientDocuments from "../features/pacient/screens/Documents"
+import Register from "@/features/auth/Register"
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Login />,
+  },
+  {
+    path: "register",
+    element: <Register />,
   },
   {
     path: "pacient",

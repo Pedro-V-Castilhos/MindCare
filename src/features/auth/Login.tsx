@@ -91,6 +91,9 @@ function Login() {
                             <Field>
                                 <Button type="submit" className="w-full bg-indigo-600 text-white hover:bg-indigo-700 py-5 cursor-pointer" >Entrar</Button>
                             </Field>
+                            <Field className="text-center">
+                                <p>Não tem uma conta? <Button variant="link" onClick={() => navigate("/register")} className="p-0 text-indigo-700">Registrar-se</Button></p>
+                            </Field>
                         </FieldGroup>
                     </form>
                     <Division>OU ACESSO RÁPIDO</Division>
