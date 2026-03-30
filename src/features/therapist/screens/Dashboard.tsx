@@ -88,10 +88,10 @@ function TherapistDashboard() {
                                     <CustomCardHeader>
                                         <div className="flex flex-col gap-2">
                                             <CustomCardTitle>Sessão de Terapia</CustomCardTitle>
-                                            <CustomCardSubtitle><Calendar className="inline-block" /> {new Date(appointments[0].date).toLocaleDateString()}</CustomCardSubtitle>
-                                            <CustomCardSubtitle><Clock className="inline-block" /> {new Date(appointments[0].date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {new Date(new Date(appointments[0].date).getTime() + appointments[0].durationMinutes * 60000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</CustomCardSubtitle>
+                                            <CustomCardSubtitle><Calendar className="inline-block" /> {new Date(nextAppointments[0].date).toLocaleDateString()}</CustomCardSubtitle>
+                                            <CustomCardSubtitle><Clock className="inline-block" /> {new Date(nextAppointments[0].date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {new Date(new Date(nextAppointments[0].date).getTime() + nextAppointments[0].durationMinutes * 60000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</CustomCardSubtitle>
                                         </div>
-                                        <Badge variant={appointments[0].status === "scheduled" ? "default" : "secondary"}>{appointments[0].status === "scheduled" ? "Agendado" : appointments[0].status === "completed" ? "Realizado" : "Cancelado"}</Badge>
+                                        <Badge variant={nextAppointments[0].status === "scheduled" ? "default" : "secondary"}>{nextAppointments[0].status === "scheduled" ? "Agendado" : nextAppointments[0].status === "completed" ? "Realizado" : "Cancelado"}</Badge>
                                     </CustomCardHeader>
                                 </CustomCard>
                                 : <div className="flex flex-col items-center justify-center py-4 gap-2">
