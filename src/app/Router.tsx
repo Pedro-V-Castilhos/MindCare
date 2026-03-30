@@ -7,6 +7,7 @@ import PacientNotes from "../features/pacient/screens/Notes"
 import PacientDocuments from "../features/pacient/screens/Documents"
 import Register from "@/features/auth/Register"
 import TherapistDashboard from "@/features/therapist/screens/Dashboard"
+import TherapistAppointments from "@/features/therapist/screens/Appointments"
 
 const router = createBrowserRouter([
   {
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
       {
         path: "",
         element: <TherapistDashboard />
+      },
+      {
+        path: "appointments",
+        element: <TherapistAppointments />
       }
     ]
   }
