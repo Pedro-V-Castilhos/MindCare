@@ -179,7 +179,7 @@ function PacientProgress() {
                                 <DialogClose asChild>
                                     <Button variant="outline" className="border-s! border-gray-300! text-black hover:text-black! hover:bg-accent-foreground! cursor-pointer">Cancelar</Button>
                                 </DialogClose>
-                                <Button type="submit" className="bg-indigo-700 hover:bg-indigo-800 text-white cursor-pointer">Agendar</Button>
+                                <Button type="submit" className="bg-indigo-700 hover:bg-indigo-800 text-white cursor-pointer">Registrar</Button>
                             </DialogFooter>
                         </form>
                     </DialogContent>
