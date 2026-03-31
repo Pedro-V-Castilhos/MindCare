@@ -6,40 +6,159 @@ import { MutedText } from "@/components/Text";
 import { Badge } from "@/components/ui/badge";
 import { useAppointmentStore } from "@/hooks/appointmentStore";
 import type { Appointment } from "@/types/appointment";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Controller, useForm } from "react-hook-form";
+import { Input } from "@/components/ui/input";
+import { Combobox, ComboboxContent, ComboboxItem, ComboboxList, ComboboxInput } from "@/components/ui/combobox";
+import type { Pacient } from "@/types/user";
+import { useSessionStore } from "@/hooks/sessionStore";
+import { useState } from "react";
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
+
+interface NewAppointmentData {
+    date: string;
+    time: string;
+    type: "online" | "presential";
+    location: string;
+    duration: number;
+}
 
 function Appointments() {
     return (
         <Layout>
             <AppointmentsList />
             <AppointmentsHistory />
+            <Toaster richColors />
         </Layout>
     )
 }
 
 function AppointmentsList() {
-    const appointments = useAppointmentStore(state => state.appointments).filter(appt => new Date(appt.date) >= new Date()).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    const session = useSessionStore((s) => s.session);
+    const user = session?.user as Pacient;
+    const newAppointments = useAppointmentStore(state => state.appointments).filter(appt => new Date(appt.date) >= new Date()).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    const { appointments, addAppointment } = useAppointmentStore()
+    const [open, setOpen] = useState(false);
+    const { register, handleSubmit, control, formState: { errors } } = useForm<NewAppointmentData>({
+        defaultValues: {
+            date: '',
+            time: '',
+            type: 'online',
+            location: '',
+            duration: 0,
+        },
+    });
+
+    const sumbitNewAppointment = (data: NewAppointmentData) => {
+        const dateTime = new Date(`${data.date}T${data.time}`);
+        try {
+            addAppointment({
+                id: appointments.length > 0 ? Math.max(...appointments.map(a => a.id)) + 1 : 1,
+                patientId: user.id,
+                therapistId: user.therapistId,
+                date: dateTime,
+                time: data.time,
+                durationMinutes: data.duration,
+                status: "scheduled",
+                location: data.location,
+                type: data.type,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            } as Appointment);
+            toast.success("Sessão agendada com sucesso!");
+            setOpen(false);
+        } catch (error) {
+            toast.error("Ocorreu um erro ao agendar a sessão. Por favor, tente novamente.\n" + (error instanceof Error ? error.message : "Erro desconhecido."));
+            return;
+        }
+    };
 
     return (
         <div>
             <div className="flex sm:flex-row flex-col sm:justify-between items-start sm:items-center my-4 gap-2 sm:gap-0">
                 <h2 className="text-black text-xl font-semibold">Próximas Sessões</h2>
-                <Button variant="default" className="bg-black text-white px-3 py-4 w-full sm:w-auto flex">
-                    <Plus />
-                    Novo Agendamento
-                </Button>
+                <Dialog open={open} onOpenChange={setOpen}>
+                    <DialogTrigger asChild>
+                        <Button variant="default" className="bg-black text-white px-3 py-4 w-full sm:w-auto flex">
+                            <Plus />
+                            Novo Agendamento
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-lg bg-white backdrop:fill-accent-foreground">
+                        <form onSubmit={handleSubmit(sumbitNewAppointment)}>
+                            <DialogHeader className="text-black!">
+                                <DialogTitle>Agendar Nova Sessão</DialogTitle>
+                                <DialogDescription>Preencha os dados para criar um novo agendamento.</DialogDescription>
+                            </DialogHeader>
+                            <FieldGroup>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <Field>
+                                        <FieldLabel className="text-black">Data:</FieldLabel>
+                                        <Input {...register("date", { required: true, min: { value: new Date().toISOString().split("T")[0], message: "A data não pode ser anterior à data atual." } })} type="date" className="text-black w-full bg-gray-100! placeholder:text-black border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required />
+                                        <FieldError>{errors.date?.message}</FieldError>
+                                    </Field>
+                                    <Field>
+                                        <FieldLabel className="text-black">Hora:</FieldLabel>
+                                        <Input {...register("time", { required: true })} type="time" className="text-black w-full bg-gray-100! placeholder:text-black border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required />
+                                        <FieldError>{errors.time?.message}</FieldError>
+                                    </Field>
+                                </div>
+                                <Field>
+                                    <FieldLabel className="text-black">Formato:</FieldLabel>
+                                    <Controller
+                                        control={control}
+                                        name="type"
+                                        rules={{ required: true }}
+                                        render={({ field }) => (
+                                            <Combobox value={field.value ?? ""} itemToStringLabel={(value) => value === "online" ? "Online" : "Presencial"} onValueChange={(value) => { field.onChange(value) }}>
+                                                <ComboboxInput placeholder="Selecione um formato..." className="z-50 w-full sm:w-auto text-black! bg-gray-100! border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                                                <ComboboxContent className="pointer-events-auto">
+                                                    <ComboboxList>
+                                                        <ComboboxItem value="online">Online</ComboboxItem>
+                                                        <ComboboxItem value="presential">Presencial</ComboboxItem>
+                                                    </ComboboxList>
+                                                </ComboboxContent>
+                                            </Combobox>
+                                        )} />
+                                    <FieldError>{errors.type?.message}</FieldError>
+                                </Field>
+                                <Field>
+                                    <FieldLabel className="text-black">Local/Link:</FieldLabel>
+                                    <Input {...register("location", { required: true })} placeholder="Google Meet, Zoom ou endereço físico" type="text" className="text-black w-full bg-gray-100! placeholder:text-muted-foreground! border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required />
+                                    <FieldError>{errors.location?.message}</FieldError>
+                                </Field>
+                                <Field>
+                                    <FieldLabel className="text-black">Duração (minutos):</FieldLabel>
+                                    <Input {...register("duration", { required: true, valueAsNumber: true, min: { value: 30, message: "A duração mínima é de 30 minutos." } })} type="number" className="text-black w-full bg-gray-100! placeholder:text-black border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required />
+                                    <FieldError>{errors.duration?.message}</FieldError>
+                                </Field>
+                            </FieldGroup>
+                            <DialogFooter className="bg-white">
+                                <DialogClose asChild>
+                                    <Button variant="outline" className="border-s! border-gray-300! text-black hover:text-black! hover:bg-accent-foreground! cursor-pointer">Cancelar</Button>
+                                </DialogClose>
+                                <Button type="submit" className="bg-indigo-700 hover:bg-indigo-800 text-white cursor-pointer">Agendar</Button>
+                            </DialogFooter>
+                        </form>
+                    </DialogContent>
+                </Dialog>
             </div>
-            {appointments.length === 0 ? (
-                <CustomCard>
-                    <CustomCardContent className="flex flex-col gap-4 justify-center items-center py-4">
-                        <MutedText>Nenhuma sessão agendada!</MutedText>
-                    </CustomCardContent>
-                </CustomCard>
-            ) : (
-                appointments.map(appointment => (
-                    <AppointmentCard key={appointment.id} appointment={appointment} />
-                ))
-            )}
-        </div>
+            {
+                newAppointments.length === 0 ? (
+                    <CustomCard>
+                        <CustomCardContent className="flex flex-col gap-4 justify-center items-center py-4">
+                            <MutedText>Nenhuma sessão agendada!</MutedText>
+                        </CustomCardContent>
+                    </CustomCard>
+                ) : (
+                    newAppointments.map(appointment => (
+                        <AppointmentCard key={appointment.id} appointment={appointment} />
+                    ))
+                )
+            }
+        </div >
     )
 }
 
