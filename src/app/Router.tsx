@@ -8,6 +8,7 @@ import PacientDocuments from "../features/pacient/screens/Documents"
 import Register from "@/features/auth/Register"
 import TherapistDashboard from "@/features/therapist/screens/Dashboard"
 import TherapistAppointments from "@/features/therapist/screens/Appointments"
+import TherapistPacientProgress from "@/features/therapist/screens/PacientProgress"
 
 const router = createBrowserRouter([
   {
@@ -53,6 +54,10 @@ const router = createBrowserRouter([
       {
         path: "appointments",
         element: <TherapistAppointments />
+      },
+      {
+        path: "progress",
+        element: <TherapistPacientProgress />
       }
     ]
   }
