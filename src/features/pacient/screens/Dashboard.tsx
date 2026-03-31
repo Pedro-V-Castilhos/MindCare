@@ -17,6 +17,7 @@ function PacientDashboard() {
     const user = session?.user as Pacient;
     const therapist = useUserStore((s) => s.users.find(u => u.id === user?.therapistId)) as Therapist;
     const documents = useDocumentsStore((s) => s.documents);
+    const totalAppointments = useAppointmentStore((s) => s.appointments.filter(a => a.patientId === user?.id).length);
     const appointments = useAppointmentStore(useShallow((s) => s.appointments.filter(a => a.patientId === user?.id && new Date(a.date) >= new Date()).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())));
 
     return (
@@ -28,7 +29,7 @@ function PacientDashboard() {
                         <CustomCardIcon><Calendar /></CustomCardIcon>
                     </CustomCardHeader>
                     <CustomCardContent>
-                        <CustomCardNumberHighlight>{user?.totalSessions}</CustomCardNumberHighlight>
+                        <CustomCardNumberHighlight>{totalAppointments}</CustomCardNumberHighlight>
                         <CustomCardHighlightDescription>Sessões realizadas</CustomCardHighlightDescription>
                     </CustomCardContent>
                 </CustomCard>

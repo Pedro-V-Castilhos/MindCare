@@ -9,7 +9,6 @@ export const usersMock: (Pacient | Therapist)[] = [
     password: "1234",
     role: "pacient",
     therapistId: 2,
-    totalSessions: 10,
     createdAt: new Date(),
     updatedAt: new Date(),
   },

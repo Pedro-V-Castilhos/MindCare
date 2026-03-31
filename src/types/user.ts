@@ -13,7 +13,6 @@ export interface User {
 export interface Pacient extends User {
   role: "pacient"
   therapistId: number
-  totalSessions: number
 }
 
 export interface Therapist extends User {
