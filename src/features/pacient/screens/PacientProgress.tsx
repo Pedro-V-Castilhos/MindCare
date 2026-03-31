@@ -14,6 +14,8 @@ import * as React from "react"
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import { useProgressEntriesStore } from "@/hooks/progressEntriesStore";
 import { Card, CardContent } from "@/components/ui/card";
+import type { Pacient } from "@/types/user";
+import { useSessionStore } from "@/hooks/sessionStore";
 
 const chartConfig = {
     mood: {
@@ -35,7 +37,9 @@ const chartConfig = {
 } satisfies ChartConfig
 
 function PacientProgress() {
-    const progressEntries = useProgressEntriesStore(state => state.progressEntries).filter(entry => new Date(entry.date) >= new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 7)).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    const session = useSessionStore((s) => s.session);
+    const user = session?.user as Pacient;
+    const progressEntries = useProgressEntriesStore(state => state.progressEntries).filter((entry) => entry.patientId === user?.id).filter(entry => new Date(entry.date) >= new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 7)).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 
     return (
         <Layout>
@@ -103,6 +107,8 @@ function ProgressStatistics({ children }: { children?: React.ReactNode }) {
 
 function ProgressChart() {
     const [width, setWidth] = React.useState(window.innerWidth);
+    const session = useSessionStore((s) => s.session);
+    const user = session?.user as Pacient;
 
     React.useEffect(() => {
         const handleResize = () => setWidth(window.innerWidth);
@@ -110,7 +116,7 @@ function ProgressChart() {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-    const chartData = useProgressEntriesStore(state => state.progressEntries).filter(entry => new Date(entry.date) >= new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 30)).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    const chartData = useProgressEntriesStore(state => state.progressEntries).filter((entry) => entry.patientId === user?.id).filter(entry => new Date(entry.date) >= new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 30)).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 
     return (
         <CustomCard>
