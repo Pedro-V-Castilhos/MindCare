@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useSessionNoteStore } from "@/hooks/sessionNoteStore";
 import type { SessionNote } from "@/types/sessionNote";
+import { useSessionStore } from "@/hooks/sessionStore";
 
 function PacientNotes() {
     return (
@@ -18,7 +19,9 @@ function PacientNotes() {
 }
 
 function NotesList() {
-    const notes = useSessionNoteStore(state => state.sessionNotes).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    const session = useSessionStore((s) => s.session);
+    const userId = session?.user.id;
+    const notes = useSessionNoteStore(state => state.sessionNotes).filter(note => note.patientId === userId).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
     return (
         <div className="flex flex-col">
