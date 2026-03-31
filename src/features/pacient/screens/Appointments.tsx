@@ -92,7 +92,7 @@ function AppointmentsList() {
                                 <DialogTitle>Agendar Nova Sessão</DialogTitle>
                                 <DialogDescription>Preencha os dados para criar um novo agendamento.</DialogDescription>
                             </DialogHeader>
-                            <FieldGroup>
+                            <FieldGroup className="pt-4">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <Field>
                                         <FieldLabel className="text-black">Data:</FieldLabel>
