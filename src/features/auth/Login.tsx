@@ -56,6 +56,8 @@ function Login() {
         if (hydrated && sessionStore.session) {
             if (sessionStore.session.user.role === "pacient") {
                 navigate("/pacient");
+            } else if (sessionStore.session.user.role === "therapist") {
+                navigate("/therapist");
             }
         }
     }, [hydrated, sessionStore.session, navigate]);
