@@ -8,6 +8,7 @@ export interface SessionNote {
   mood?: string
   progress?: number
   topicsCovered?: string[]
+  privateNotes?: string
   nextSteps?: string
   createdAt: Date
   updatedAt: Date
