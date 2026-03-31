@@ -10,6 +10,7 @@ import TherapistDashboard from "@/features/therapist/screens/Dashboard"
 import TherapistAppointments from "@/features/therapist/screens/Appointments"
 import TherapistPacientProgress from "@/features/therapist/screens/PacientProgress"
 import TherapistNotes from "@/features/therapist/screens/Notes"
+import TherapistDocuments from "@/features/therapist/screens/Documents"
 
 const router = createBrowserRouter([
   {
@@ -63,6 +64,10 @@ const router = createBrowserRouter([
       {
         path: "notes",
         element: <TherapistNotes />
+      },
+      {
+        path: "documents",
+        element: <TherapistDocuments />
       }
     ]
   }
