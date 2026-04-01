@@ -150,7 +150,7 @@ function TherapistProgressChart({ pacient }: { pacient: Pacient | null }) {
                             return (
                                 <Card className="max-w-50">
                                     <CardContent className="p-3">
-                                        <ChartTooltipContent active={active} payload={payload} label={label} />
+                                        <ChartTooltipContent active={active} payload={payload} label={new Date(label).toLocaleDateString("pt-BR")} />
                                         {entry?.notes && <p className="text-xs text-muted-foreground mt-2 border-t pt-2">{entry.notes}</p>}
                                     </CardContent>
                                 </Card>
