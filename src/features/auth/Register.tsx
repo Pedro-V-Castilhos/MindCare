@@ -5,8 +5,9 @@ import { Brain } from "lucide-react";
 import { Field, FieldError, FieldGroup, FieldLabel } from "../../components/ui/field";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
+import { Combobox, ComboboxContent, ComboboxInput, ComboboxItem, ComboboxList } from "../../components/ui/combobox";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import { useUserStore } from "@/hooks/userStore";
 import { useState } from "react";
 import type { Pacient, Therapist } from "@/types/user";
@@ -29,7 +30,7 @@ function Register() {
     const navigate = useNavigate();
     const userStore = useUserStore();
     const [role, setRole] = useState<Role>("pacient");
-    const { register, handleSubmit, setError, formState: { errors } } = useForm<RegisterFormData>({
+    const { register, handleSubmit, setError, control, formState: { errors } } = useForm<RegisterFormData>({
         defaultValues: {
             firstName: '',
             lastName: '',
@@ -169,21 +170,28 @@ function Register() {
                             </Field>
                             {role === "pacient" && (
                                 <Field>
-                                    <FieldLabel htmlFor="therapistId">Terapeuta:</FieldLabel>
-                                    <select
-                                        {...register("therapistId", { required: role === "pacient" ? "Selecione um terapeuta" : false })}
-                                        id="therapistId"
-                                        className="w-full bg-gray-100 rounded-md border border-input px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                                    >
-                                        <option value="">Selecione um terapeuta</option>
-                                        {userStore.users
-                                            .filter((u): u is import("@/types/user").Therapist => u.role === "therapist")
-                                            .map(t => (
-                                                <option key={t.id} value={t.id}>
-                                                    {t.firstName} {t.lastName} — {t.speciality} (CRP: {t.CRPNumber})
-                                                </option>
-                                            ))}
-                                    </select>
+                                    <FieldLabel>Terapeuta:</FieldLabel>
+                                    <Controller control={control} name="therapistId" rules={{ required: role === "pacient" ? "Selecione um terapeuta" : false }} render={({ field }) => (
+                                        <Combobox items={userStore.users.filter((u): u is Therapist => u.role === "therapist")} onValueChange={(value) => field.onChange(String(value))} value={field.value ? Number(field.value) : null} itemToStringLabel={(value) => {
+                                            const item = userStore.users.find(u => u.id === value) as Therapist | undefined;
+                                            return item ? `${item.firstName} ${item.lastName} — ${item.speciality} (CRP: ${item.CRPNumber})` : "";
+                                        }}>
+                                            <ComboboxInput onBlur={field.onBlur} placeholder="Selecione um terapeuta..." aria-invalid={errors.therapistId ? "true" : "false"} className="z-50 w-full text-black! bg-gray-100! border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring" />
+                                            <ComboboxContent>
+                                                <ComboboxList className="pointer-events-auto">
+                                                    {(item) => (
+                                                        <ComboboxItem
+                                                            key={item.id}
+                                                            value={item.id}
+                                                            className="cursor-pointer px-3 py-2 rounded-md hover:bg-gray-200"
+                                                        >
+                                                            {item.firstName} {item.lastName} — {item.speciality} (CRP: {item.CRPNumber})
+                                                        </ComboboxItem>
+                                                    )}
+                                                </ComboboxList>
+                                            </ComboboxContent>
+                                        </Combobox>
+                                    )} />
                                     <FieldError className="text-red-500 text-sm mt-1 font-semibold">{errors.therapistId?.message}</FieldError>
                                 </Field>
                             )}
