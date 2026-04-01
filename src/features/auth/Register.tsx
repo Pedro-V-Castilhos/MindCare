@@ -41,6 +41,8 @@ function Register() {
             speciality: '',
             CRPNumber: '',
         },
+        mode: "onSubmit",
+        reValidateMode: "onChange",
     });
 
     const handleRegister = (data: RegisterFormData) => {
@@ -72,7 +74,6 @@ function Register() {
                 password: data.password,
                 role: "pacient",
                 therapistId: Number(data.therapistId),
-                totalSessions: 0,
                 createdAt: now,
                 updatedAt: now,
             };
@@ -138,18 +139,18 @@ function Register() {
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <Field>
                                     <FieldLabel htmlFor="firstName">Nome:</FieldLabel>
-                                    <Input {...register("firstName", { required: "Nome é obrigatório" })} id="firstName" type="text" placeholder="Digite seu nome" required className="w-full bg-gray-100! py-5" />
+                                    <Input {...register("firstName", { required: "Nome é obrigatório" })} id="firstName" type="text" placeholder="Digite seu nome" aria-invalid={errors.firstName ? "true" : "false"} className="w-full bg-gray-100! py-5" />
                                     <FieldError className="text-red-500 text-sm mt-1 font-semibold">{errors.firstName?.message}</FieldError>
                                 </Field>
                                 <Field>
                                     <FieldLabel htmlFor="lastName">Sobrenome:</FieldLabel>
-                                    <Input {...register("lastName", { required: "Sobrenome é obrigatório" })} id="lastName" type="text" placeholder="Digite seu sobrenome" required className="w-full bg-gray-100! py-5" />
+                                    <Input {...register("lastName", { required: "Sobrenome é obrigatório" })} id="lastName" type="text" placeholder="Digite seu sobrenome" aria-invalid={errors.lastName ? "true" : "false"} className="w-full bg-gray-100! py-5" />
                                     <FieldError className="text-red-500 text-sm mt-1 font-semibold">{errors.lastName?.message}</FieldError>
                                 </Field>
                             </div>
                             <Field>
                                 <FieldLabel htmlFor="email">Email:</FieldLabel>
-                                <Input {...register("email", { required: "Email é obrigatório" })} id="email" type="email" placeholder="Digite seu email" required className="w-full bg-gray-100! py-5" />
+                                <Input {...register("email", { required: "Email é obrigatório" })} id="email" type="email" placeholder="Digite seu email" aria-invalid={errors.email ? "true" : "false"} className="w-full bg-gray-100! py-5" />
                                 <FieldError className="text-red-500 text-sm mt-1 font-semibold">{errors.email?.message}</FieldError>
                             </Field>
                             <Field>
@@ -158,12 +159,12 @@ function Register() {
                             </Field>
                             <Field>
                                 <FieldLabel htmlFor="password">Senha:</FieldLabel>
-                                <Input {...register("password", { required: "Senha é obrigatória", minLength: { value: 4, message: "Senha deve ter no mínimo 4 caracteres" } })} id="password" type="password" placeholder="Digite sua senha" required className="w-full bg-gray-100! py-5" />
+                                <Input {...register("password", { required: "Senha é obrigatória", minLength: { value: 4, message: "Senha deve ter no mínimo 4 caracteres" } })} id="password" type="password" placeholder="Digite sua senha" aria-invalid={errors.password ? "true" : "false"} className="w-full bg-gray-100! py-5" />
                                 <FieldError className="text-red-500 text-sm mt-1 font-semibold">{errors.password?.message}</FieldError>
                             </Field>
                             <Field>
                                 <FieldLabel htmlFor="confirmPassword">Confirmar Senha:</FieldLabel>
-                                <Input {...register("confirmPassword", { required: "Confirmação de senha é obrigatória" })} id="confirmPassword" type="password" placeholder="Confirme sua senha" required className="w-full bg-gray-100! py-5" />
+                                <Input {...register("confirmPassword", { required: "Confirmação de senha é obrigatória" })} id="confirmPassword" type="password" placeholder="Confirme sua senha" aria-invalid={errors.confirmPassword ? "true" : "false"} className="w-full bg-gray-100! py-5" />
                                 <FieldError className="text-red-500 text-sm mt-1 font-semibold">{errors.confirmPassword?.message}</FieldError>
                             </Field>
                             {role === "pacient" && (
@@ -190,12 +191,12 @@ function Register() {
                                 <>
                                     <Field>
                                         <FieldLabel htmlFor="speciality">Especialidade:</FieldLabel>
-                                        <Input {...register("speciality", { required: role === "therapist" ? "Especialidade é obrigatória" : false })} id="speciality" type="text" placeholder="Ex: Psicologia Clínica" required className="w-full bg-gray-100! py-5" />
+                                        <Input {...register("speciality", { required: role === "therapist" ? "Especialidade é obrigatória" : false })} id="speciality" type="text" placeholder="Ex: Psicologia Clínica" aria-invalid={errors.speciality ? "true" : "false"} className="w-full bg-gray-100! py-5" />
                                         <FieldError className="text-red-500 text-sm mt-1 font-semibold">{errors.speciality?.message}</FieldError>
                                     </Field>
                                     <Field>
                                         <FieldLabel htmlFor="CRPNumber">Número do CRP:</FieldLabel>
-                                        <Input {...register("CRPNumber", { required: role === "therapist" ? "Número do CRP é obrigatório" : false })} id="CRPNumber" type="text" placeholder="Ex: 06/123456" required className="w-full bg-gray-100! py-5" />
+                                        <Input {...register("CRPNumber", { required: role === "therapist" ? "Número do CRP é obrigatório" : false })} id="CRPNumber" type="text" placeholder="Ex: 06/123456" aria-invalid={errors.CRPNumber ? "true" : "false"} className="w-full bg-gray-100! py-5" />
                                         <FieldError className="text-red-500 text-sm mt-1 font-semibold">{errors.CRPNumber?.message}</FieldError>
                                     </Field>
                                 </>

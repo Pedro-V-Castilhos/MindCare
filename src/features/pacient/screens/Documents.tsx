@@ -11,7 +11,7 @@ import type { Document } from "@/types/document";
 import { downloadFile } from "@/lib/bucket";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useState } from "react";
-import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Controller, useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Combobox, ComboboxContent, ComboboxInput, ComboboxItem, ComboboxList } from "@/components/ui/combobox";
@@ -25,12 +25,14 @@ interface DocumentFormData {
 function PacientDocuments() {
     const session = useSessionStore((s) => s.session);
     const user = session?.user as Pacient;
-    const { register, handleSubmit, control, watch } = useForm<DocumentFormData>({
+    const { register, handleSubmit, control, watch, formState: { errors } } = useForm<DocumentFormData>({
         defaultValues: {
             name: '',
             type: 'receipt',
             file: undefined,
         },
+        mode: "onSubmit",
+        reValidateMode: "onChange",
     })
     const file = watch("file");
     const [open, setOpen] = useState(false);
@@ -79,16 +81,17 @@ function PacientDocuments() {
                                 <DialogTitle className="text-black">Fazer Upload de Documento</DialogTitle>
                                 <DialogDescription>Adicione um novo documento ao sistema</DialogDescription>
                             </DialogHeader>
-                            <FieldGroup className="py-4">
+                            <FieldGroup className="py-4 max-h-[65vh] overflow-auto">
                                 <Field>
                                     <FieldLabel className="text-black">Nome do Documento:</FieldLabel>
-                                    <Input {...register("name", { required: true })} placeholder="Ex: Recibo - Sessão --/--/----" className="text-black w-full bg-gray-100! placeholder:text-muted-foreground! border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                                    <Input {...register("name", { required: "Nome do documento é obrigatório" })} placeholder="Ex: Recibo - Sessão --/--/----" aria-invalid={errors.name ? "true" : "false"} className="text-black w-full bg-gray-100! placeholder:text-muted-foreground! border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                                    <FieldError>{errors.name?.message}</FieldError>
                                 </Field>
                                 <Field>
                                     <FieldLabel className="text-black">Tipo do Documento:</FieldLabel>
-                                    <Controller control={control} name="type" rules={{ required: true }} render={({ field }) => (
+                                    <Controller control={control} name="type" rules={{ required: "Tipo do documento é obrigatório" }} render={({ field }) => (
                                         <Combobox items={Object.keys(documentTypes)} onValueChange={field.onChange} value={field.value ?? ""} itemToStringLabel={(value) => documentTypes[value]}>
-                                            <ComboboxInput placeholder="Selecione o tipo de documento" className="z-50 w-full sm:w-auto text-black! bg-gray-100! border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                                            <ComboboxInput placeholder="Selecione o tipo de documento" aria-invalid={errors.type ? "true" : "false"} className="z-50 w-full sm:w-auto text-black! bg-gray-100! border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
                                             <ComboboxContent>
                                                 <ComboboxList className="pointer-events-auto">
                                                     {(item) => (
@@ -104,14 +107,16 @@ function PacientDocuments() {
                                             </ComboboxContent>
                                         </Combobox>
                                     )} />
+                                    <FieldError>{errors.type?.message}</FieldError>
                                 </Field>
                                 <Field>
                                     <FieldLabel className="text-black">Arquivo:</FieldLabel>
-                                    <Input id="file" {...register("file", { required: true, max: { value: 52428800, message: "O arquivo deve ter no máximo 50MB" } })} type="file" accept=".pdf,.doc,.docx,.txt,.jpg,.png,.jpeg" className="hidden" />
+                                    <Input id="file" {...register("file", { required: "Arquivo é obrigatório", max: { value: 52428800, message: "O arquivo deve ter no máximo 50MB" } })} type="file" accept=".pdf,.doc,.docx,.txt,.jpg,.png,.jpeg" className="hidden" />
                                     <label htmlFor="file" className="w-full cursor-pointer bg-gray-100 border border-gray-300 rounded-md px-3 py-2 text-black hover:bg-gray-200">
                                         <FileText className="inline-block mr-2" />{file && file.length > 0 ? file[0].name : "Selecione um arquivo"}
                                     </label>
                                     <FieldDescription className="text-sm text-muted-foreground">Tipos permitidos: PDF, DOC, DOCX, TXT, JPG, PNG, JPEG (Max: 50MB)</FieldDescription>
+                                    <FieldError>{errors.file?.message}</FieldError>
                                 </Field>
                             </FieldGroup>
                             <DialogFooter className="bg-white">

@@ -26,6 +26,8 @@ function Login() {
             email: '',
             password: '',
         },
+        mode: "onSubmit",
+        reValidateMode: "onChange",
     });
 
     const handleLogin = (data: LoginFormData) => {
@@ -85,12 +87,12 @@ function Login() {
                         <FieldGroup>
                             <Field>
                                 <FieldLabel htmlFor="email">Email:</FieldLabel>
-                                <Input {...register("email", { required: true })} id="email" type="email" placeholder="Digite seu email" required className="w-full bg-gray-100! py-5" />
+                                <Input {...register("email", { required: "Email é obrigatório" })} id="email" type="email" placeholder="Digite seu email" aria-invalid={errors.email ? "true" : "false"} className="w-full bg-gray-100! py-5" />
                                 <FieldError className="text-red-500 text-sm mt-1 font-semibold">{errors.email?.message}</FieldError>
                             </Field>
                             <Field>
                                 <FieldLabel htmlFor="password">Senha:</FieldLabel>
-                                <Input {...register("password", { required: true })} id="password" type="password" placeholder="Digite sua senha" required className="w-full bg-gray-100! py-5" />
+                                <Input {...register("password", { required: "Senha é obrigatória" })} id="password" type="password" placeholder="Digite sua senha" aria-invalid={errors.password ? "true" : "false"} className="w-full bg-gray-100! py-5" />
                                 <FieldError className="text-red-500 text-sm mt-1 font-semibold">{errors.password?.message}</FieldError>
                             </Field>
                             <Field>

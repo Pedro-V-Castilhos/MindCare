@@ -49,6 +49,8 @@ function AppointmentsList() {
             location: '',
             duration: 60,
         },
+        mode: "onSubmit",
+        reValidateMode: "onChange",
     });
 
     const { appointments, addAppointment } = useAppointmentStore();
@@ -102,13 +104,13 @@ function AppointmentsList() {
                                     <Controller
                                         control={control}
                                         name="pacientId"
-                                        rules={{ required: true }}
+                                        rules={{ required: "Paciente é obrigatório" }}
                                         render={({ field }) => (
                                             <Combobox value={field.value} itemToStringLabel={(value) => {
                                                 const pacient = useUserStore.getState().users.find(u => u.id === value);
                                                 return pacient ? pacient.firstName + " " + pacient.lastName : "";
                                             }} onValueChange={(value) => { field.onChange(value) }}>
-                                                <ComboboxInput placeholder="Selecione um paciente..." className="z-50 w-full sm:w-auto text-black! bg-gray-100! border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                                                <ComboboxInput placeholder="Selecione um paciente..." aria-invalid={errors.pacientId ? "true" : "false"} className="z-50 w-full sm:w-auto text-black! bg-gray-100! border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
                                                 <ComboboxContent className="pointer-events-auto">
                                                     <ComboboxList>
                                                         {users.filter((u) => u.role === "pacient" && u.therapistId === user.id).map((user) => (
@@ -126,12 +128,12 @@ function AppointmentsList() {
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <Field>
                                         <FieldLabel className="text-black">Data:</FieldLabel>
-                                        <Input {...register("date", { required: true, min: { value: new Date().toISOString().split("T")[0], message: "A data não pode ser anterior à data atual." } })} type="date" className="text-black w-full bg-gray-100! placeholder:text-black border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required />
+                                        <Input {...register("date", { required: "Data é obrigatória", min: { value: new Date().toISOString().split("T")[0], message: "A data não pode ser anterior à data atual." } })} type="date" aria-invalid={errors.date ? "true" : "false"} className="text-black w-full bg-gray-100! placeholder:text-black border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
                                         <FieldError>{errors.date?.message}</FieldError>
                                     </Field>
                                     <Field>
                                         <FieldLabel className="text-black">Hora:</FieldLabel>
-                                        <Input {...register("time", { required: true })} type="time" className="text-black w-full bg-gray-100! placeholder:text-black border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required />
+                                        <Input {...register("time", { required: "Hora é obrigatória" })} type="time" aria-invalid={errors.time ? "true" : "false"} className="text-black w-full bg-gray-100! placeholder:text-black border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
                                         <FieldError>{errors.time?.message}</FieldError>
                                     </Field>
                                 </div>
@@ -140,10 +142,10 @@ function AppointmentsList() {
                                     <Controller
                                         control={control}
                                         name="type"
-                                        rules={{ required: true }}
+                                        rules={{ required: "Formato é obrigatório" }}
                                         render={({ field }) => (
                                             <Combobox value={field.value ?? ""} itemToStringLabel={(value) => value === "online" ? "Online" : "Presencial"} onValueChange={(value) => { field.onChange(value) }}>
-                                                <ComboboxInput placeholder="Selecione um formato..." className="z-50 w-full sm:w-auto text-black! bg-gray-100! border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                                                <ComboboxInput placeholder="Selecione um formato..." aria-invalid={errors.type ? "true" : "false"} className="z-50 w-full sm:w-auto text-black! bg-gray-100! border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
                                                 <ComboboxContent className="pointer-events-auto">
                                                     <ComboboxList>
                                                         <ComboboxItem value="online">Online</ComboboxItem>
@@ -156,12 +158,12 @@ function AppointmentsList() {
                                 </Field>
                                 <Field>
                                     <FieldLabel className="text-black">Local/Link:</FieldLabel>
-                                    <Input {...register("location", { required: true })} placeholder="Google Meet, Zoom ou endereço físico" type="text" className="text-black w-full bg-gray-100! placeholder:text-muted-foreground! border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required />
+                                    <Input {...register("location", { required: "Local/Link é obrigatório" })} placeholder="Google Meet, Zoom ou endereço físico" type="text" aria-invalid={errors.location ? "true" : "false"} className="text-black w-full bg-gray-100! placeholder:text-muted-foreground! border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
                                     <FieldError>{errors.location?.message}</FieldError>
                                 </Field>
                                 <Field>
                                     <FieldLabel className="text-black">Duração (minutos):</FieldLabel>
-                                    <Input {...register("duration", { required: true, valueAsNumber: true, min: { value: 30, message: "A duração mínima é de 30 minutos." } })} type="number" className="text-black w-full bg-gray-100! placeholder:text-black border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required />
+                                    <Input {...register("duration", { required: "Duração é obrigatória", valueAsNumber: true, min: { value: 30, message: "A duração mínima é de 30 minutos." } })} type="number" aria-invalid={errors.duration ? "true" : "false"} className="text-black w-full bg-gray-100! placeholder:text-black border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
                                     <FieldError>{errors.duration?.message}</FieldError>
                                 </Field>
                             </FieldGroup>

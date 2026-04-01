@@ -18,7 +18,7 @@ import type { Pacient } from "@/types/user";
 import { useSessionStore } from "@/hooks/sessionStore";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useState } from "react";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Controller, useForm } from "react-hook-form";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
@@ -59,7 +59,7 @@ function PacientProgress() {
     const [open, setOpen] = useState(false);
     const { progressEntries, addProgressEntry } = useProgressEntriesStore()
     const hasEntryToday = progressEntries.some(entry => entry.patientId === user.id && new Date(entry.date).toDateString() === new Date().toDateString());
-    const { register, handleSubmit, control } = useForm<ProgressEntryFormData>({
+    const { register, handleSubmit, control, formState: { errors } } = useForm<ProgressEntryFormData>({
         defaultValues: {
             mood: 3,
             anxietyLevel: 3,
@@ -67,6 +67,8 @@ function PacientProgress() {
             energyLevel: 3,
             notes: "",
         },
+        mode: "onSubmit",
+        reValidateMode: "onChange",
     });
 
     const now = new Date();
@@ -127,7 +129,7 @@ function PacientProgress() {
                             </DialogHeader>
                             <FieldGroup className="pt-4">
                                 <Field>
-                                    <Controller control={control} name="mood" rules={{ required: true }} render={({ field }) => (
+                                    <Controller control={control} name="mood" rules={{ required: "Humor é obrigatório" }} render={({ field }) => (
                                         <>
                                             <div className="flex items-center justify-between mb-1">
                                                 <FieldLabel className="text-black">Humor:</FieldLabel>
@@ -136,9 +138,10 @@ function PacientProgress() {
                                             <Slider value={[field.value]} onValueChange={(value) => field.onChange(value[0])} min={0} max={5} step={1} />
                                         </>
                                     )} />
+                                    <FieldError>{errors.mood?.message}</FieldError>
                                 </Field>
                                 <Field>
-                                    <Controller control={control} name="anxietyLevel" rules={{ required: true }} render={({ field }) => (
+                                    <Controller control={control} name="anxietyLevel" rules={{ required: "Ansiedade é obrigatória" }} render={({ field }) => (
                                         <>
                                             <div className="flex items-center justify-between mb-1">
                                                 <FieldLabel className="text-black">Ansiedade:</FieldLabel>
@@ -147,9 +150,10 @@ function PacientProgress() {
                                             <Slider value={[field.value]} onValueChange={(value) => field.onChange(value[0])} min={0} max={5} step={1} />
                                         </>
                                     )} />
+                                    <FieldError>{errors.anxietyLevel?.message}</FieldError>
                                 </Field>
                                 <Field>
-                                    <Controller control={control} name="sleepQuality" rules={{ required: true }} render={({ field }) => (
+                                    <Controller control={control} name="sleepQuality" rules={{ required: "Qualidade do sono é obrigatória" }} render={({ field }) => (
                                         <>
                                             <div className="flex items-center justify-between mb-1">
                                                 <FieldLabel className="text-black">Qualidade do Sono:</FieldLabel>
@@ -158,9 +162,10 @@ function PacientProgress() {
                                             <Slider value={[field.value]} onValueChange={(value) => field.onChange(value[0])} min={0} max={5} step={1} />
                                         </>
                                     )} />
+                                    <FieldError>{errors.sleepQuality?.message}</FieldError>
                                 </Field>
                                 <Field>
-                                    <Controller control={control} name="energyLevel" rules={{ required: true }} render={({ field }) => (
+                                    <Controller control={control} name="energyLevel" rules={{ required: "Nível de energia é obrigatório" }} render={({ field }) => (
                                         <>
                                             <div className="flex items-center justify-between mb-1">
                                                 <FieldLabel className="text-black">Nível de Energia:</FieldLabel>
@@ -169,6 +174,7 @@ function PacientProgress() {
                                             <Slider value={[field.value]} onValueChange={(value) => field.onChange(value[0])} min={0} max={5} step={1} />
                                         </>
                                     )} />
+                                    <FieldError>{errors.energyLevel?.message}</FieldError>
                                 </Field>
                                 <Field>
                                     <FieldLabel className="text-black">Observações (Opcional):</FieldLabel>
