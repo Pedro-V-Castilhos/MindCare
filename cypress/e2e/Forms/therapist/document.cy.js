@@ -6,7 +6,6 @@ describe("Teste de Navegação do Paciente", () => {
     cy.visit("http://localhost:5173/")
     const validEmail = "dr.smith@teste.com"
     const validPassword = "1234"
-
     cy.get('input[name="email"]').type(validEmail)
     cy.get('input[name="password"]').type(validPassword)
     cy.get('button[type="submit"]').click()
@@ -56,5 +55,15 @@ describe("Teste de Navegação do Paciente", () => {
     cy.get('input[type="file"]').attachFile(filePath)
     cy.get('button[type="submit"]').click()
     cy.contains("Tipo de documento inválido").should("be.visible")
+  })
+
+  it("Deve exibir mensagem ao excluir um documento", () => {
+    const documentName = "Consulta_2026-03-01.txt"
+    cy.contains(documentName).should("be.visible")
+    cy.contains("Cancelar").click()
+    cy.get('[data-testid="delete-document-button"]').click()
+    cy.contains("Documento excluído com sucesso!").should("be.visible")
+    cy.contains(documentName).should("not.exist")
+    cy.contains("Documento excluído com sucesso!").should("be.visible")
   })
 })

@@ -209,7 +209,7 @@ function DocumentCard({ userDocument }: { userDocument: Document }) {
                         }} variant="secondary" className="bg-gray-100 text-gray-800 hover:bg-gray-200">
                             <Download />
                         </Button>
-                        <Button variant="destructive" className="bg-red-400! text-white hover:bg-red-500!" onClick={() => removeDocument(userDocument.id)}>
+                        <Button variant="destructive" data-testid="delete-document-button" className="bg-red-400! text-white hover:bg-red-500!" onClick={() => { removeDocument(userDocument.id); toast.success("Documento excluído com sucesso!"); }}>
                             <TrashIcon strokeWidth={3} />
                         </Button>
                     </div>
