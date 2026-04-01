@@ -1,0 +1,53 @@
+================================================================
+                    RECIBO DE SESSÃO
+                       MindCare
+================================================================
+
+Nº do Recibo: 001
+Data de Emissão: 24/03/2026
+
+----------------------------------------------------------------
+                  DADOS DO PROFISSIONAL
+----------------------------------------------------------------
+Nome: Dr(a). Smith Jhonson
+CRP: 06/123456
+Especialidade: Psicologia Clínica
+E-mail: dr.smith@teste.com
+Telefone: ---
+
+----------------------------------------------------------------
+                  DADOS DO PACIENTE
+----------------------------------------------------------------
+Nome: Jhon Doe
+E-mail: teste@teste.com
+
+----------------------------------------------------------------
+                  DADOS DA SESSÃO
+----------------------------------------------------------------
+Data da Sessão: 01/03/2026
+Horário: 10:00
+Duração: 50 minutos
+Modalidade: ( X ) Presencial  ( ) Online
+Local/Plataforma: ---
+
+----------------------------------------------------------------
+                  DADOS DO PAGAMENTO
+----------------------------------------------------------------
+Descrição: Sessão de psicoterapia individual
+Valor: R$ 200,00
+Forma de Pagamento: Dinheiro
+
+----------------------------------------------------------------
+
+Declaro ter recebido o valor acima referente ao serviço
+de atendimento psicológico prestado na data indicada.
+
+
+
+________________________________________
+Dr(a). Smith Jhonson
+CRP: 06/123456
+
+================================================================
+            Este recibo não substitui nota fiscal.
+================================================================

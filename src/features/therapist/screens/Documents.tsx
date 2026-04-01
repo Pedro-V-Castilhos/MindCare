@@ -31,7 +31,7 @@ function TherapistDocuments() {
     const user = session?.user as Therapist;
     const patients = useUserStore(useShallow(state => state.users.filter(u => u.role === "pacient" && u.therapistId === user.id)));
     const [open, setOpen] = useState(false);
-    const { register, handleSubmit, control, watch, formState: { errors } } = useForm<DocumentFormData>({
+    const { register, handleSubmit, control, watch, formState: { errors }, setError } = useForm<DocumentFormData>({
         defaultValues: {
             pacientId: 0,
             name: "",
@@ -50,8 +50,19 @@ function TherapistDocuments() {
     const file = watch("file");
     const { documents, addDocument } = useDocumentsStore()
 
+    const documentFormat = ["pdf", "doc", "docx", "txt", "jpg", "png", "jpeg"];
+
     const submitNewDocument = async (data: DocumentFormData) => {
         const file = data.file[0];
+        const fileExtension = file.name.split(".").pop()?.toLowerCase();
+        if (!fileExtension || !documentFormat.includes(fileExtension)) {
+            setError("file", { type: "manual", message: "Tipo de documento inválido" });
+            return;
+        }
+        if (file.size > 52428800) {
+            setError("file", { type: "manual", message: "O arquivo deve ter no máximo 50MB" });
+            return;
+        }
         try {
             addDocument({
                 id: documents.length > 0 ? Math.max(...documents.map(d => d.id)) + 1 : 1,
@@ -178,6 +189,27 @@ function DocumentList() {
     )
 }
 
+const getDocumentType = (userDocument: Document) => {
+    let typeLabel = "";
+    switch (userDocument.type) {
+        case "receipt":
+            typeLabel = "Recibo";
+            break;
+        case "report":
+            typeLabel = "Relatório";
+            break;
+        case "prescription":
+            typeLabel = "Prescrição";
+            break;
+        case "other":
+            typeLabel = "Outro";
+            break;
+        default:
+            typeLabel = "Desconhecido";
+    }
+    return <Badge variant="secondary">{typeLabel}</Badge>;
+}
+
 function DocumentCard({ userDocument }: { userDocument: Document }) {
     const removeDocument = useDocumentsStore(state => state.removeDocument);
     const pacient = useUserStore(state => state.users.find(u => u.id === userDocument.patientId));
@@ -189,7 +221,7 @@ function DocumentCard({ userDocument }: { userDocument: Document }) {
                     <div className="flex flex-row gap-2 items-center">
                         <FileText size={40} className="bg-gray-200 p-2 rounded-lg" />
                         <div>
-                            <p className="font-semibold">{userDocument.name} <Badge variant="secondary">{userDocument.type}</Badge></p>
+                            <p className="font-semibold">{userDocument.name} <Badge variant="secondary">{getDocumentType(userDocument)}</Badge></p>
                             <p className="text-muted-foreground">Paciente: {`${pacient?.firstName} ${pacient?.lastName}`}</p>
                             <p className="text-muted-foreground">Upload: {new Date(userDocument.uploadDate).toLocaleDateString()} • {userDocument.size} KB</p>
                         </div>

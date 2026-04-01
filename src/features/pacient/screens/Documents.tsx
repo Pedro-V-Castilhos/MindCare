@@ -15,7 +15,7 @@ import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/c
 import { Controller, useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Combobox, ComboboxContent, ComboboxInput, ComboboxItem, ComboboxList } from "@/components/ui/combobox";
-import { toast } from "sonner";
+import { toast, Toaster } from "sonner";
 interface DocumentFormData {
     name: string;
     type: "receipt" | "report" | "prescription" | "other";
@@ -25,7 +25,7 @@ interface DocumentFormData {
 function PacientDocuments() {
     const session = useSessionStore((s) => s.session);
     const user = session?.user as Pacient;
-    const { register, handleSubmit, control, watch, formState: { errors } } = useForm<DocumentFormData>({
+    const { register, handleSubmit, control, watch, formState: { errors }, setError } = useForm<DocumentFormData>({
         defaultValues: {
             name: '',
             type: 'receipt',
@@ -45,8 +45,19 @@ function PacientDocuments() {
         other: "Outro"
     };
 
+    const documentFormat = ["pdf", "doc", "docx", "txt", "jpg", "png", "jpeg"];
+
     const submitNewDocument = async (data: DocumentFormData) => {
         const file = data.file[0];
+        const fileExtension = file.name.split(".").pop()?.toLowerCase();
+        if (!fileExtension || !documentFormat.includes(fileExtension)) {
+            setError("file", { type: "manual", message: "Tipo de documento inválido" });
+            return;
+        }
+        if (file.size > 52428800) {
+            setError("file", { type: "manual", message: "O arquivo deve ter no máximo 50MB" });
+            return;
+        }
         try {
             addDocument({
                 id: documents.length > 0 ? Math.max(...documents.map(d => d.id)) + 1 : 1,
@@ -131,6 +142,7 @@ function PacientDocuments() {
 
             </div>
             <DocumentList />
+            <Toaster richColors />
         </Layout>
     )
 }
@@ -148,6 +160,28 @@ function DocumentList() {
     )
 }
 
+const getDocumentType = (userDocument: Document) => {
+    let typeLabel = "";
+    switch (userDocument.type) {
+        case "receipt":
+            typeLabel = "Recibo";
+            break;
+        case "report":
+            typeLabel = "Relatório";
+            break;
+        case "prescription":
+            typeLabel = "Prescrição";
+            break;
+        case "other":
+            typeLabel = "Outro";
+            break;
+        default:
+            typeLabel = "Desconhecido";
+    }
+
+    return <Badge variant="secondary">{typeLabel}</Badge>;
+}
+
 function DocumentCard({ userDocument }: { userDocument: Document }) {
     const removeDocument = useDocumentsStore(state => state.removeDocument);
     return (
@@ -157,7 +191,7 @@ function DocumentCard({ userDocument }: { userDocument: Document }) {
                     <div className="flex flex-row gap-2 items-center">
                         <FileText size={40} className="bg-gray-200 p-2 rounded-lg" />
                         <div>
-                            <p className="font-semibold">{userDocument.name} <Badge variant="secondary">{userDocument.type}</Badge></p>
+                            <p className="font-semibold">{userDocument.name} {getDocumentType(userDocument)}</p>
                             <p className="text-muted-foreground">Upload: {new Date(userDocument.uploadDate).toLocaleDateString()} • {userDocument.size} KB</p>
                         </div>
                     </div>
