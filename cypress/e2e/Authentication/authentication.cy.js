@@ -52,7 +52,8 @@ describe("Authentication Tests", () => {
     cy.get('input[name="email"]').type(newEmail)
     cy.get('input[name="password"]').type(newPassword)
     cy.get('input[name="confirmPassword"]').type(newPassword)
-    cy.get('select[name="therapistId"]').select("2")
+    cy.get('[role="combobox"]').click()
+    cy.get('[role="option"]').contains("2").click()
     cy.get('button[type="submit"]').click()
 
     cy.contains("Entrar").should("be.visible")
@@ -90,7 +91,8 @@ describe("Authentication Tests", () => {
     cy.get('input[name="email"]').type(existingEmail)
     cy.get('input[name="password"]').type(password)
     cy.get('input[name="confirmPassword"]').type(password)
-    cy.get('select[name="therapistId"]').select("2")
+    cy.get('[role="combobox"]').click()
+    cy.get('[role="option"]').contains("2").click()
     cy.get('button[type="submit"]').click()
 
     cy.contains("Este email já está cadastrado").should("be.visible")
@@ -107,7 +109,8 @@ describe("Authentication Tests", () => {
     cy.get('input[name="email"]').type(newEmail)
     cy.get('input[name="password"]').type(password)
     cy.get('input[name="confirmPassword"]').type(confirmPassword)
-    cy.get('select[name="therapistId"]').select("2")
+    cy.get('[role="combobox"]').click()
+    cy.get('[role="option"]').contains("2").click()
     cy.get('button[type="submit"]').click()
 
     cy.contains("As senhas não coincidem").should("be.visible")
@@ -125,7 +128,8 @@ describe("Authentication Tests", () => {
     cy.get('input[name="email"]').type(newEmail)
     cy.get('input[name="password"]').type(newPassword)
     cy.get('input[name="confirmPassword"]').type(newPassword)
-    cy.get('select[name="therapistId"]').select("2")
+    cy.get('[role="combobox"]').click()
+    cy.get('[role="option"]').contains("2").click()
     cy.get('button[type="submit"]').click()
 
     cy.get('input[name="email"]').type(newEmail)
