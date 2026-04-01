@@ -186,7 +186,7 @@ function AppointmentCard({ appointment }: { appointment: Appointment }) {
                     <CustomCardSubtitle><Calendar className="inline-block" /> {new Date(appointment.date).toLocaleDateString()}</CustomCardSubtitle>
                     <CustomCardSubtitle><Clock className="inline-block" /> {new Date(appointment.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {new Date(new Date(appointment.date).getTime() + appointment.durationMinutes * 60000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</CustomCardSubtitle>
                 </div>
-                <Badge variant={appointment.status === "scheduled" ? "default" : "secondary"}>{appointment.status === "scheduled" ? "Agendado" : appointment.status === "completed" ? "Realizado" : "Cancelado"}</Badge>
+                <Badge variant={appointment.status === "scheduled" ? "default" : "secondary"}>{appointment.status === "scheduled" ? "Agendado" : "Realizado"}</Badge>
             </CustomCardHeader>
             <CustomCardContent>
                 <MutedText>Local: {appointment.location || "Não informado"}</MutedText>

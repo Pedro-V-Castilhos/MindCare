@@ -5,7 +5,7 @@ export interface Appointment {
   date: Date
   time: string
   durationMinutes: number
-  status: "scheduled" | "completed" | "canceled"
+  status: "scheduled" | "completed"
   location?: string
   type?: "presential" | "online"
   createdAt: Date
