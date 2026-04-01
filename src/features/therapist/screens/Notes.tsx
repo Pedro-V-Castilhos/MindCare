@@ -42,7 +42,7 @@ function TherapistNotes() {
     const patients = useUserStore(useShallow((s) => s.users.filter(u => u.role === "pacient" && u.therapistId === user?.id)));
     const { appointments } = useAppointmentStore()
 
-    const { register, handleSubmit, formState: { errors }, watch, control, setValue, reset } = useForm<NotesFormData>({
+    const { register, handleSubmit, formState: { errors }, watch, control, setValue, reset, setError } = useForm<NotesFormData>({
         defaultValues: {
             patientId: null,
             appointmentId: null,
@@ -82,6 +82,13 @@ function TherapistNotes() {
     }, [open, reset]);
 
     const submitNewNote = (data: NotesFormData) => {
+        if (data.topicsCovered.length === 0) {
+            setError("topicsCovered", { message: "Este campo é obrigatório" });
+            return;
+        } else if (data.topicsCovered.length > 5) {
+            setError("topicsCovered", { message: "Você pode adicionar no máximo 5 tópicos abordados" });
+            return;
+        }
         try {
             if (!data.id) {
                 const appointmentDate = appointments.find(a => a.id === data.appointmentId)?.date;
@@ -242,7 +249,7 @@ function TherapistNotes() {
                                                     </Badge>
                                                 ))}
                                             </div>
-                                            <Input type="text" placeholder="Adicionar tópico..." className="text-black! bg-gray-100! border border-gray-300 rounded-md px-3 py-2 mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" aria-invalid={errors.topicsCovered ? "true" : "false"} onKeyDown={(e) => {
+                                            <Input name="topicsCovered" type="text" placeholder="Adicionar tópico..." className="text-black! bg-gray-100! border border-gray-300 rounded-md px-3 py-2 mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" aria-invalid={errors.topicsCovered ? "true" : "false"} onKeyDown={(e) => {
                                                 if (e.key === "Enter" && e.currentTarget.value.trim() !== "") {
                                                     e.preventDefault();
                                                     if (!tags.includes(e.currentTarget.value.trim())) {
@@ -304,7 +311,7 @@ function NoteCard({ note, reset, setOpen }: { note: SessionNote, reset: UseFormR
             <Collapsible>
                 <CustomCardHeader>
                     <CustomCardTitle><FileText className="inline-block mr-2" />Sessão - {new Date(note.date).toLocaleDateString("pt-BR")}</CustomCardTitle>
-                    <CollapsibleTrigger asChild>
+                    <CollapsibleTrigger asChild data-testid="collapse-trigger">
                         <Button variant="outline" size="sm" className="group hover:bg-accent-foreground! hover:text-black text-black!">
                             <ChevronDown strokeWidth={4} className="group-data-[state=open]:rotate-180" />
                         </Button>
