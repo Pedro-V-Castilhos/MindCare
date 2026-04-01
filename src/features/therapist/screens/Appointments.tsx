@@ -13,15 +13,15 @@ import { Input } from "@/components/ui/input";
 import { Controller, useForm } from "react-hook-form";
 import { Combobox, ComboboxContent, ComboboxInput, ComboboxItem, ComboboxList } from "@/components/ui/combobox";
 import { useState } from "react";
-import { toast } from "sonner";
+import { toast, Toaster } from "sonner";
 import type { Therapist } from "@/types/user";
 import { useSessionStore } from "@/hooks/sessionStore";
 
 interface NewAppointmentData {
-    pacientId: number;
+    pacientId: number | null;
     date: string;
     time: string;
-    type: "online" | "presential";
+    type: "online" | "presential" | null;
     location: string;
     duration: number;
 }
@@ -31,6 +31,7 @@ function TherapistAppointments() {
         <Layout>
             <AppointmentsList />
             <AppointmentsHistory />
+            <Toaster richColors />
         </Layout>
     )
 }
@@ -42,10 +43,10 @@ function AppointmentsList() {
     const [open, setOpen] = useState(false);
     const { register, handleSubmit, control, formState: { errors } } = useForm<NewAppointmentData>({
         defaultValues: {
-            pacientId: 0,
+            pacientId: null,
             date: '',
             time: '',
-            type: "online",
+            type: null,
             location: '',
             duration: 60,
         },
@@ -222,9 +223,12 @@ function AppointmentCard({ appointment }: { appointment: Appointment }) {
             <CustomCardContent>
                 <MutedText>Local: {appointment.location || "Não informado"}</MutedText>
                 <MutedText>Formato: {appointment.type === "presential" ? "Presencial" : appointment.type === "online" ? "Online" : "Não informado"}</MutedText>
-                <Button variant="destructive" className="bg-red-400! text-white hover:bg-red-500! my-4 cursor-pointer" onClick={() => {
-                    useAppointmentStore.getState().removeAppointment(appointment.id);
-                }}>Cancelar Sessão</Button>
+                {new Date(appointment.date) > new Date() && (
+                    <Button variant="destructive" className="bg-red-400! text-white hover:bg-red-500! my-4 cursor-pointer" onClick={() => {
+                        useAppointmentStore.getState().removeAppointment(appointment.id);
+                        toast.success("Sessão cancelada com sucesso!");
+                    }}>Cancelar Sessão</Button>
+                )}
             </CustomCardContent>
         </CustomCard>
     )
