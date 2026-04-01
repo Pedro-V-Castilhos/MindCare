@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Controller, useForm } from "react-hook-form";
 import { Combobox, ComboboxContent, ComboboxInput, ComboboxItem, ComboboxList } from "@/components/ui/combobox";
 import { useState } from "react";
-import { toast } from "sonner";
+import { toast, Toaster } from "sonner";
 import { useShallow } from "zustand/shallow";
 
 interface DocumentFormData {
@@ -172,6 +172,7 @@ function TherapistDocuments() {
                 </Dialog>
             </div>
             <DocumentList />
+            <Toaster richColors />
         </Layout>
     )
 }
