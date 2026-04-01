@@ -14,7 +14,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, type UseFormReset } from "react-hook-form";
 import { useUserStore } from "@/hooks/userStore";
 import { Combobox, ComboboxContent, ComboboxInput, ComboboxItem, ComboboxList } from "@/components/ui/combobox";
 import { useAppointmentStore } from "@/hooks/appointmentStore";
@@ -24,7 +24,8 @@ import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 
 interface NotesFormData {
-    pacientId: number | undefined | null;
+    id: number | undefined | null;
+    patientId: number | undefined | null;
     appointmentId: number | undefined | null;
     mood: string;
     topicsCovered: string[];
@@ -36,14 +37,14 @@ interface NotesFormData {
 function TherapistNotes() {
     const [open, setOpen] = useState(false);
     const session = useSessionStore((s) => s.session);
-    const { sessionNotes, addSessionNote } = useSessionNoteStore();
+    const { sessionNotes, addSessionNote, updateSessionNote } = useSessionNoteStore();
     const user = session?.user as Therapist;
     const patients = useUserStore(useShallow((s) => s.users.filter(u => u.role === "pacient" && u.therapistId === user?.id)));
     const { appointments } = useAppointmentStore()
 
-    const { register, handleSubmit, formState: { errors }, watch, control, setValue } = useForm<NotesFormData>({
+    const { register, handleSubmit, formState: { errors }, watch, control, setValue, reset } = useForm<NotesFormData>({
         defaultValues: {
-            pacientId: null,
+            patientId: null,
             appointmentId: null,
             mood: "",
             topicsCovered: [],
@@ -55,30 +56,87 @@ function TherapistNotes() {
         reValidateMode: "onChange",
     });
 
-    const currentPacientId = watch("pacientId");
+    const currentPatientId = watch("patientId");
     const tags = watch("topicsCovered");
+    const currentId = watch("id");
 
     useEffect(() => {
-        setValue("appointmentId", null);
-    }, [currentPacientId, setValue]);
+        if (!currentId) {
+            setValue("appointmentId", null);
+        }
+    }, [currentPatientId, currentId, setValue]);
+
+    useEffect(() => {
+        if (!open) {
+            reset({
+                id: null,
+                patientId: null,
+                appointmentId: null,
+                mood: "",
+                topicsCovered: [],
+                content: "",
+                nextSteps: "",
+                privateNotes: "",
+            });
+        }
+    }, [open, reset]);
 
     const submitNewNote = (data: NotesFormData) => {
         try {
-            addSessionNote({
-                id: sessionNotes.length ? Math.max(...sessionNotes.map(note => note.id)) + 1 : 1,
-                appointmentId: data.appointmentId,
-                therapistId: user.id,
-                patientId: data.pacientId,
-                date: new Date(),
-                content: data.content,
-                mood: data.mood,
-                topicsCovered: data.topicsCovered,
-                privateNotes: data.privateNotes,
-                nextSteps: data.nextSteps,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-            } as SessionNote);
-            toast.success("Anotação de sessão adicionada com sucesso!");
+            if (!data.id) {
+                const appointmentDate = appointments.find(a => a.id === data.appointmentId)?.date;
+                addSessionNote({
+                    id: sessionNotes.length ? Math.max(...sessionNotes.map(note => note.id)) + 1 : 1,
+                    appointmentId: data.appointmentId,
+                    therapistId: user.id,
+                    patientId: data.patientId,
+                    date: appointmentDate,
+                    content: data.content,
+                    mood: data.mood,
+                    topicsCovered: data.topicsCovered,
+                    privateNotes: data.privateNotes,
+                    nextSteps: data.nextSteps,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                } as SessionNote);
+                toast.success("Anotação de sessão adicionada com sucesso!");
+                reset({
+                    id: null,
+                    patientId: null,
+                    appointmentId: null,
+                    mood: "",
+                    topicsCovered: [],
+                    content: "",
+                    nextSteps: "",
+                    privateNotes: "",
+                });
+
+            } else {
+                updateSessionNote({
+                    id: data.id,
+                    appointmentId: data.appointmentId!,
+                    therapistId: user.id,
+                    patientId: data.patientId,
+                    content: data.content,
+                    mood: data.mood,
+                    topicsCovered: data.topicsCovered,
+                    privateNotes: data.privateNotes,
+                    nextSteps: data.nextSteps,
+                    updatedAt: new Date(),
+                } as SessionNote);
+                toast.success("Anotação de sessão editada com sucesso!");
+                reset({
+                    id: null,
+                    patientId: null,
+                    appointmentId: null,
+                    mood: "",
+                    topicsCovered: [],
+                    content: "",
+                    nextSteps: "",
+                    privateNotes: "",
+                });
+
+            }
         } catch (error) {
             toast.error("Erro ao adicionar anotação de sessão:" + (error instanceof Error ? error.message : "Erro desconhecido"));
         } finally {
@@ -104,14 +162,15 @@ function TherapistNotes() {
                                 <DialogDescription>Documente os detalhes e observações da sessão</DialogDescription>
                             </DialogHeader>
                             <FieldGroup className="py-4 max-h-[60vh] overflow-y-auto">
+                                <Input type="hidden" {...register("id")} />
                                 <Field>
                                     <FieldLabel className="text-black">Paciente:</FieldLabel>
-                                    <Controller control={control} name="pacientId" rules={{ required: "Paciente é obrigatório" }} render={({ field }) => (
+                                    <Controller control={control} name="patientId" rules={{ required: "Paciente é obrigatório" }} render={({ field }) => (
                                         <Combobox items={patients} onValueChange={(value) => field.onChange(Number(value))} value={field.value} itemToStringLabel={(value) => {
                                             const item = patients.find(u => u.id === value);
                                             return item ? `${item.firstName} ${item.lastName}` : "";
                                         }}>
-                                            <ComboboxInput onBlur={field.onBlur} placeholder="Selecione o paciente..." aria-invalid={errors.pacientId ? "true" : "false"} className="z-50 w-full sm:w-auto text-black! bg-gray-100! border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                                            <ComboboxInput onBlur={field.onBlur} placeholder="Selecione o paciente..." aria-invalid={errors.patientId ? "true" : "false"} className="z-50 w-full sm:w-auto text-black! bg-gray-100! border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
                                             <ComboboxContent>
                                                 <ComboboxList className="pointer-events-auto">
                                                     {(item) => (
@@ -127,16 +186,16 @@ function TherapistNotes() {
                                             </ComboboxContent>
                                         </Combobox>
                                     )} />
-                                    <FieldError>{errors.pacientId?.message}</FieldError>
+                                    <FieldError>{errors.patientId?.message}</FieldError>
                                 </Field>
                                 <Field>
                                     <FieldLabel className="text-black">Sessão:</FieldLabel>
                                     <Controller control={control} name="appointmentId" rules={{ required: "Sessão é obrigatória" }} render={({ field }) => (
-                                        <Combobox items={appointments.filter(a => a.patientId === currentPacientId)} onValueChange={(value) => field.onChange(Number(value))} value={field.value} itemToStringLabel={(value) => {
+                                        <Combobox items={appointments.filter(a => a.patientId === currentPatientId)} onValueChange={(value) => field.onChange(Number(value))} value={field.value} itemToStringLabel={(value) => {
                                             const item = appointments.find(a => a.id === value);
                                             return item ? `${new Date(item.date).toLocaleDateString()} - ${item.time}` : "";
                                         }}>
-                                            <ComboboxInput disabled={!currentPacientId} aria-invalid={errors.appointmentId ? "true" : "false"} placeholder="Selecione a sessão..." className="z-50 w-full sm:w-auto text-black! bg-gray-100! border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                                            <ComboboxInput disabled={!currentPatientId} aria-invalid={errors.appointmentId ? "true" : "false"} placeholder="Selecione a sessão..." className="z-50 w-full sm:w-auto text-black! bg-gray-100! border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
                                             <ComboboxContent>
                                                 <ComboboxList className="pointer-events-auto">
                                                     {(item) => (
@@ -217,13 +276,13 @@ function TherapistNotes() {
                     </DialogContent>
                 </Dialog>
             </div>
-            <NotesList />
+            <NotesList reset={reset} setOpen={setOpen} />
             <Toaster richColors />
         </Layout>
     )
 }
 
-function NotesList() {
+function NotesList({ reset, setOpen }: { reset: UseFormReset<NotesFormData>, setOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
     const session = useSessionStore((s) => s.session);
     const user = session?.user as Therapist;
     const notes = useSessionNoteStore(state => state.sessionNotes).filter(note => note.therapistId === user?.id).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -231,13 +290,13 @@ function NotesList() {
     return (
         <div className="flex flex-col">
             {notes.map((note) => (
-                <NoteCard key={note.id} note={note} />
+                <NoteCard key={note.id} note={note} reset={reset} setOpen={setOpen} />
             ))}
         </div>
     )
 }
 
-function NoteCard({ note }: { note: SessionNote }) {
+function NoteCard({ note, reset, setOpen }: { note: SessionNote, reset: UseFormReset<NotesFormData>, setOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
     const { removeSessionNote } = useSessionNoteStore();
 
     return (
@@ -279,7 +338,8 @@ function NoteCard({ note }: { note: SessionNote }) {
                             <p className="text-gray-500">{note.privateNotes}</p>
                         </div>
                         <div className="flex mt-5">
-                            <Button variant="destructive" className="cursor-pointer" size="sm" onClick={() => removeSessionNote(note.id)}>Excluir Anotação</Button>
+                            <Button variant="destructive" className="cursor-pointer" size="sm" onClick={() => { removeSessionNote(note.id); toast.success("Anotação excluída com sucesso!"); }}>Excluir Anotação</Button>
+                            <Button variant="default" className="ml-2 cursor-pointer" size="sm" onClick={() => { reset(note); setOpen(true); }}>Editar Anotação</Button>
                         </div>
                     </CollapsibleContent>
                 </CustomCardContent>
