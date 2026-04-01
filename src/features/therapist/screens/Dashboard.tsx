@@ -61,7 +61,7 @@ function TherapistDashboard() {
                                     <CustomCardSubtitle>{p.email}</CustomCardSubtitle>
                                 </div>
                                 <div className="text-right">
-                                    <CustomCardSubtitle>Total de Sessões: {appointments.filter(a => a.patientId === p.id).length}</CustomCardSubtitle>
+                                    <CustomCardSubtitle>Total de Sessões: {appointments.filter(a => a.patientId === p.id && new Date(a.date) < new Date()).length}</CustomCardSubtitle>
                                     <CustomCardSubtitle>Desde: {new Date(p.createdAt).toLocaleDateString()}</CustomCardSubtitle>
                                 </div>
                             </CustomCardHeader>
