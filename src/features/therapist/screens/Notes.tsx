@@ -238,6 +238,8 @@ function NotesList() {
 }
 
 function NoteCard({ note }: { note: SessionNote }) {
+    const { removeSessionNote } = useSessionNoteStore();
+
     return (
         <CustomCard>
             <Collapsible>
@@ -275,6 +277,9 @@ function NoteCard({ note }: { note: SessionNote }) {
                         <div className="mt-5">
                             <p className="text-orange-400 font-bold text-md">Notas Privadas (Somente terapeuta)</p>
                             <p className="text-gray-500">{note.privateNotes}</p>
+                        </div>
+                        <div className="flex mt-5">
+                            <Button variant="destructive" className="cursor-pointer" size="sm" onClick={() => removeSessionNote(note.id)}>Excluir Anotação</Button>
                         </div>
                     </CollapsibleContent>
                 </CustomCardContent>
